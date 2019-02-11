@@ -32,9 +32,8 @@ class LanguageController extends CI_Controller {
         }
 
         $this->load->model('MLanguage');
-
         $res = $this->MLanguage->infoLanguage();
-
-        echo json_decode($res);
+        
+        echo json_encode($res);
     }
 }
