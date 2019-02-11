@@ -28,12 +28,14 @@ date_default_timezone_set('Asia/Bangkok');
 
 if ($_SERVER['SERVER_NAME'] != 'localhost') {
 
-	$config['apiUrl'] 		= 'http://192.168.1.253';
-	$config['base_url'] 	= '/';
+	// $config['apiUrl'] 		= 'http://192.168.1.253';
+	// $config['base_url'] 	= '/';
+	$config['base_url'] 	= '/api-yotaka/';
 	
 }else{
-	$config['base_url'] 	= '/apiCash/';
-	$config['apiUrl'] 		= 'http://10.10.3.191';
+	// $config['base_url'] 	= '/apiCash/';
+	// $config['apiUrl'] 		= 'http://10.10.3.191';
+	$config['base_url'] 	= '/api-yotaka/';
 }
 
 /*
