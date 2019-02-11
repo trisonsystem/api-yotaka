@@ -52,11 +52,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] 	= 'StockController';
 $route['test'] 					= 'StockController/testapi';
 
-## member
-{
-    $route['infolang']              = 'LanguageController/infoLanguage';
-}
-##--
+$route['infolang']              = 'LanguageController/infoLanguage';
+
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
