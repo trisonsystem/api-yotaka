@@ -1,0 +1,32 @@
+
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    RewriteRule ^(.*)$ index.php/$1 [L]
+
+    RewriteRule ^(/)?$ index.php/$1 [L]
+</IfModule>
+
+# Configures the caching expiry date for browser caching of static files.
+
+<IfModule mod_expires.c>
+  <FilesMatch "\.(jpg|jpeg|gif|png|mp3|flv|mov|avi|3pg|html|htm|swf)$">
+       ExpiresActive on
+       ExpiresDefault "access plus 1 year"
+   </FilesMatch>
+</IfModule>
+ 
+
+### CONFIGURE ETAGS    ###############################################################
+
+# Configures E-tag headers to be sent with static content. Basically the browser
+
+# updates it cache if this header changes.
+
+<FilesMatch "\.(jpg|jpeg|gif|png|mp3|flv|mov|avi|3pg|html|htm|swf)$">
+    FileETag MTime Size
+</FilesMatch>
+  
