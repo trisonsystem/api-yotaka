@@ -53,7 +53,7 @@ $route['default_controller'] 	= 'StockController';
 $route['test'] 					= 'StockController/testapi';
 
 $route['infolang']              = 'LanguageController/infoLanguage';
-
+$route['lang/(:any)']              = 'LanguageController/$1';
 
 $route['404_override'] = '';
-$route['translate_uri_dashes'] = FALSE;
+$route[] = FALSE;
