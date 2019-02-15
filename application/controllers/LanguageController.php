@@ -25,16 +25,16 @@ class LanguageController extends CI_Controller
 
     public function infoLanguage()
     {
-        $g_data = $this->input->get();
+        // $g_data = $this->input->get();
 
-        $dataReceive = TripleDES::decryptText($g_data['data'], 'KsAsFUHSyl9bH3qUTxxHg1mZGRgwQpQ4');
-        $dataReceive = json_decode($dataReceive, true);
+        // $dataReceive = TripleDES::decryptText($g_data['data'], 'KsAsFUHSyl9bH3qUTxxHg1mZGRgwQpQ4');
+        // $dataReceive = json_decode($dataReceive, true);
 
-        if ($dataReceive == '') {
-            $arrRetrun = array("sflag" => false, "msg" => "Key TripleDES Error ");
-            echo json_encode($arrRetrun);
-            return;
-        }
+        // if ($dataReceive == '') {
+        //     $arrRetrun = array("sflag" => false, "msg" => "Key TripleDES Error ");
+        //     echo json_encode($arrRetrun);
+        //     return;
+        // }
 
         $this->load->model('MLanguage');
         $ress = $this->MLanguage->getField();
@@ -45,8 +45,8 @@ class LanguageController extends CI_Controller
             }            
         }
 
-        $res['title'] = $resA;
-        $res['list'] = $this->MLanguage->infoLanguage();
+        // $res['title'] = $resA;
+        $res = $this->MLanguage->infoLanguage();
         
         echo json_encode($res);
     }
@@ -93,7 +93,7 @@ class LanguageController extends CI_Controller
             'msg' => '',
             'data' => ''
         );
-
+        // debug($dataReceive, true);
         if (isset($dataReceive)) {
             $result = $this->MLanguage->SaveLanguage($dataReceive);
             if ($result == true) {
@@ -246,6 +246,42 @@ class LanguageController extends CI_Controller
         // debug($dataReceive, true);
         if (isset($dataReceive)) {
             $result = $this->MLanguage->SaveEditLanguage($dataReceive);
+            // debug($result, true);
+            if ($result == true) {
+                $res['status'] = 200;
+                $res['msg'] = 'Success';
+                $res['data'] = $result;  
+            } else {
+                $res['msg'] = 'Error data not found';
+            }         
+            
+        } else {
+            $res['msg'] = 'error : 500';
+            $res['data'] = '';
+        }
+
+        echo json_encode($res);
+    }
+
+    public function getLanguageFromWord(){
+        $get = $this->input->get();
+        $dataReceive = TripleDES::decryptText($get['data'], 'KsAsFUHSyl9bH3qUTxxHg1mZGRgwQpQ4');
+        $dataReceive = json_decode($dataReceive, true);
+
+        if ($dataReceive == '') {
+            $arrRetrun = array("sflag" => false, "msg" => "Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+        
+        $res = array(
+            'status' => 500,
+            'msg' => '',
+            'data' => ''
+        );
+        // debug($dataReceive, true);
+        if (isset($dataReceive)) {
+            $result = $this->MLanguage->GetLanguageFromWord($dataReceive['word']);
             // debug($result, true);
             if ($result == true) {
                 $res['status'] = 200;

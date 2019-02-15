@@ -50,11 +50,20 @@ class MLanguage extends CI_Model
     }
 
     public function SaveEditLanguage($d){        
-        $to_remove = array("eword");
+        $to_remove = array("word");
         $arrfilter = array_diff_key($d, array_flip($to_remove));
         
-        $this->db->where('word', $d['eword']);
+        $this->db->where('word', $d['word']);
         $this->db->update('language', $arrfilter);
         return true;
+    }
+
+    public function GetLanguageFromWord($word){
+        $this->db->select('*');
+        $this->db->from('language');
+        $this->db->where('word', $word);
+        $query = $this->db->get();
+
+        return $query->result_array();
     }
 }
