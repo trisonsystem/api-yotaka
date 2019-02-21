@@ -50,7 +50,7 @@ class MMaster extends CI_Model {
 	public function search_division( $aData ){
 		$WHERE  = "";
 		if ($aData != "") {
-			$WHERE  = ( $aData["division_id"] == "" ) ? "" : " AND DV.id='".$aData["division_id"]."'";
+			$WHERE  = ( !isset($aData["division_id"]) ) ? "" : " AND DV.id='".$aData["division_id"]."'";
 		}
 		$sql 	= " SELECT  DV.*
 					FROM m_division AS DV
@@ -221,5 +221,22 @@ class MMaster extends CI_Model {
 		return $arr;
 	}
 
+	public function search_hotel_use( $aData ){
+		$WHERE  = "";
+		if ($aData != "") {
+			$WHERE  .= ( !isset($aData["hotel_id"]) ) 		? "" : " AND id ='".$aData["hotel_id"]."'";
+			$WHERE  .= ( !isset($aData["hotel_code"]) )    	? "" : " AND code ='".$aData["hotel_code"]."'";
+		}
+		$sql 	= " SELECT * FROM hotel WHERE 1 = 1  $WHERE AND m_status_hotel_id = 1 ORDER BY id ASC";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+		}
+
+		// debug($arr);
+		return $arr;
+	}
 	
 }

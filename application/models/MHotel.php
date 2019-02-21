@@ -78,7 +78,7 @@ class MHotel extends CI_Model {
 		}
 		if ($aData["txtHotel_id"] == "0") {
 			$aSave["code"] 					= $code;
-			$aSave["status"] 				= "1";
+			$aSave["m_status_hotel_id"]		= "1";
 			$aSave["create_date"] 			= date("Y-m-d H:i:s");
 			$aSave["create_by"] 			= "zztop";
 			$aSave["update_date"] 			= date("Y-m-d H:i:s");
@@ -87,6 +87,7 @@ class MHotel extends CI_Model {
 			if ($this->db->replace('hotel', $aSave)) {
 				$aReturn["flag"] = true;
 				$aReturn["msg"] = "success";
+				$aReturn["code"] = $code;
 			}else{
 				$aReturn["flag"] = false;
 				$aReturn["msg"] = "Error SQL !!!";
@@ -98,33 +99,17 @@ class MHotel extends CI_Model {
 			if ($this->db->update('hotel', $aSave)) {
 				$aReturn["flag"] = true;
 				$aReturn["msg"] = "success";
+				$aReturn["code"] = $code;
 			}else{
 				$aReturn["flag"] = false;
 				$aReturn["msg"] = "Error SQL !!!";
 			}
 		}
 
-		if ( count( explode("temp", $aData["txtHotelProfile"]) ) > 1 ) {
-		 	$this->copy_img($aData["txtHotelProfile"], $n_path, $fodel);
-		}
 		// debug($aSave);
 
 		return $aReturn;
 
-	}
-
-	function copy_img( $file_name,  $n_path , $n_foder){
-        if ( !file_exists($n_foder) ) {
-             mkdir ($n_foder, 0755);
-        }
-        
-       if(copy($file_name, $n_path)){ 
-       	  unlink($file_name);
-          return 1;
-       }else{
-          return 0;
-       }
-      
 	}
 
 	function convert_date_to_base($str_date){
