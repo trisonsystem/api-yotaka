@@ -24,7 +24,7 @@ date_default_timezone_set('Asia/Bangkok');
 |
 */
 
-$config['des_key'] 		= 'KsAsFUHSyl9bH3qUTxxHg1mZGRgwQpQ4';
+$config['des_key'] = 'KsAsFUHSyl9bH3qUTxxHg1mZGRgwQpQ4';
 
 if ($_SERVER['SERVER_NAME'] != 'localhost') {
 
