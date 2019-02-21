@@ -20,63 +20,53 @@ class HotelController extends CI_Controller {
         print_r( json_encode($data) );
     }
 
-     public function search_quarter( $aData = "" ){
-        $dataReceive = ( isset($_POST['quarter_id']) ) ? $_POST : $aData ;
-        debug($dataReceive);
-        $aData = $this->Decode_TripleDES( $dataReceive );
+     public function search_quarter(){
+        $aData = $this->Decode_TripleDES( $_POST );
         $data  = $this->MMaster->search_quarter( $aData );
         print_r( json_encode($data) );
     }
 
 
     public function search_province( $aData = "" ){
-        $dataReceive = ( isset($_POST['quarter_id']) ) ? $_POST : $aData ;
-        $aData = $this->Decode_TripleDES( $dataReceive );
+        $aData = $this->Decode_TripleDES( $_POST );
         $data  = $this->MMaster->search_province( $aData );
         print_r( json_encode($data) );
     }
 
     public function search_amphur( $aData = "" ){
-        $dataReceive = ( isset($_POST['amphur_id']) ) ? $_POST : $aData ;
-        $aData = $this->Decode_TripleDES( $dataReceive );
+        $aData = $this->Decode_TripleDES( $_POST );
         $data  = $this->MMaster->search_amphur( $aData );
         print_r( json_encode($data) );
     }
 
 
      public function search_district( $aData = "" ){
-        $dataReceive = ( isset($_POST['amphur_id']) ) ? $_POST : $aData ;
-        $aData = $this->Decode_TripleDES( $dataReceive );
+        $aData = $this->Decode_TripleDES( $_POST );
         $data  = $this->MMaster->search_district( $aData );
         print_r( json_encode($data) );
     }
 
 
     public function search_status_hotel( $aData = "" ){
-        $this->load->model("MHotel");
-        $dataReceive = ( isset($_POST['status_hotel_id']) ) ? $_POST : $aData ;
-        $aData = $this->Decode_TripleDES( $dataReceive );
+        $aData = $this->Decode_TripleDES( $_POST );
         $data  = $this->MHotel->search_status_hotel( $aData );
         print_r( json_encode($data) );
-
     }
 
     public function save_data(){
-        $this->load->model("MHotel");
-        $res = $this->MHotel->save_data( $_POST );
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MHotel->save_data( $aData );
         print_r( json_encode($res) );
     }
 
     public function chang_status(){
-        $this->load->model("MHotel");
-        $res = $this->MHotel->chang_status( $_POST );
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MHotel->chang_status( $aData );
         print_r( json_encode($res) );
     }
 
     public function Decode_TripleDES( $aData ){
-        echo "xxxxxxx<br>"; debug( $aData );
         $data = (isset($aData["data"])) ? $aData["data"] : $aData;
-       echo "asdfawg<br>"; debug( $data );exit();
         $dataReceive = TripleDES::decryptText($data, $this->des_key);
         $dataReceive = json_decode($dataReceive, true);
 
