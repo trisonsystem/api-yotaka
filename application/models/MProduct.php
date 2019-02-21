@@ -31,4 +31,32 @@ class MProduct extends CI_Model {
 
 		return $arr;
 	}
+
+	public function addProduct($arrpost){
+
+		$arr = array('status_flag'=>0,'msg'=>'error');
+
+		$dataIns = array(
+                        'code'       => $arrpost['barcode'],
+                        'name'       => $arrpost['productname'],
+                        'type_id'    => '1',
+                        'unit_id'    => '1',
+                        'create_date'  => date('Y-m-d H:i:s'),
+                        'update_date'  => date('Y-m-d H:i:s'),
+                    );
+        $queryInsert    = $this->db->insert('product',$dataIns);
+        $statusQuery 	= $this->db->affected_rows();
+        $insId 			= $this->db->insert_id();
+
+        if($statusQuery == 1){
+        	$arr['status_flag'] = 1;
+        	$arr['msg'] 		= 'save succress';
+        }else{
+        	$arr['msg'] 		= 'error insert';
+        }
+
+        return $arr;
+
+	}
+
 }

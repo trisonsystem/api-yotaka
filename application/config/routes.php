@@ -55,7 +55,10 @@ $route['test'] 					= 'StockController/testapi';
 $route['infolang']              = 'LanguageController/infoLanguage';
 $route['lang/(:any)']              = 'LanguageController/$1';
 
-$route['product/read_product']     = 'ProductController/readProduct';
+{
+	$route['product/read_product']    = 'ProductController/readProduct';
+	$route['product/add_product']     = 'ProductController/addProduct';
+}
 
 $route['employee/(:any)']  			= 'Employee/EmployeeController/$1';
 $route['division/(:any)']  			= 'Mdivision/MdivisionController/$1';
