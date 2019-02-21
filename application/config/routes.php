@@ -55,5 +55,7 @@ $route['test'] 					= 'StockController/testapi';
 $route['infolang']              = 'LanguageController/infoLanguage';
 $route['lang/(:any)']              = 'LanguageController/$1';
 
+$route['product/read_product']     = 'ProductController/readProduct';
+
 $route['404_override'] = '';
 $route[] = FALSE;
