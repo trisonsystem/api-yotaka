@@ -22,7 +22,8 @@ class MHotel extends CI_Model {
 		$WHERE   = "";
 		$WHERE  .= ( $aData["hotel_id"] 		== "" ) ? "" : " AND HT.id='".$aData["hotel_id"]."'";
 		$WHERE  .= ( $aData["hotel_code"] 		== "" ) ? "" : " AND HT.code LIKE '%".$aData["hotel_code"]."%'";
-		$WHERE  .= ( $aData["hotel_name"] 		== "" ) ? "" : " AND HT.name LIKE '%".$aData["hotel_name"]."%'";
+		$WHERE  .= ( $aData["hotel_name"] 		== "" ) ? "" : " AND HT.name_th LIKE '%".$aData["hotel_name"]."%'";
+		$WHERE  .= ( $aData["hotel_owner"] 		== "" ) ? "" : " AND HT.fullname_owner LIKE '%".$aData["hotel_owner"]."%'";
 		$WHERE  .= ( $aData["quarter_id"] 		== "" ) ? "" : " AND HT.m_quarter_id ='".$aData["quarter_id"]."'";
 		$WHERE  .= ( $aData["province_id"] 		== "" ) ? "" : " AND HT.m_province_id ='".$aData["province_id"]."'";
 		$WHERE  .= ( $aData["amphur_id"] 		== "" ) ? "" : " AND HT.m_amphur_id='".$aData["amphur_id"]."'";
@@ -51,8 +52,7 @@ class MHotel extends CI_Model {
 	}
 
 	public function save_data( $aData ){
-		$aReturn = array();
-		
+		$aReturn  = array();
 		$code 	  = ($aData["txtHotel_id"] == "0") ? $this->create_hotel_code() : $aData["txtHotel_code"] ;
 		$fodel 	  = "assets/upload/hotel_profile/";
 		$aFN 	  = explode(".", $aData["txtHotelProfile"]);
@@ -159,7 +159,7 @@ class MHotel extends CI_Model {
 	function search_status_hotel( $aData ){
 		$WHERE  = "";
 		if ($aData != "") {
-			$WHERE  = ( $aData["status_hotel_id"] == "" ) ? "" : " AND id='".$aData["status_hotel_id"]."'";
+			$WHERE  = ( !isset( $aData["status_hotel_id"] ) ) ? "" : " AND id='".$aData["status_hotel_id"]."'";
 		}
 		$sql 	= " SELECT  * FROM m_status_hotel WHERE 1 = 1  $WHERE ORDER BY id ASC";
 		$query 	= $this->db->query($sql);
