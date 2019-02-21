@@ -66,4 +66,17 @@ class MLanguage extends CI_Model
 
         return $query->result_array();
     }
+    public function getLang( $lang = array("lang" => "en")){
+        $lang   = $lang["lang"];
+        $sql    = " SELECT  word, $lang AS lang FROM language";
+        $query  = $this->db->query($sql);
+        
+        $arr    = array();
+        foreach ($query->result_array() as $key => $value) {
+            $arr[$value["word"]] = $value["lang"];
+        }
+
+        // debug($arr);
+        return $arr;
+    }
 }
