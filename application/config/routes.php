@@ -55,5 +55,9 @@ $route['test'] 					= 'StockController/testapi';
 $route['infolang']              = 'LanguageController/infoLanguage';
 $route['lang/(:any)']              = 'LanguageController/$1';
 
+$route['employee/(:any)']  			= 'Employee/EmployeeController/$1';
+$route['division/(:any)']  			= 'Mdivision/MdivisionController/$1';
+$route['hotel/(:any)']  			= 'Hotel/HotelController/$1';
+
 $route['404_override'] = '';
 $route[] = FALSE;
