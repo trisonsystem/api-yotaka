@@ -56,8 +56,10 @@ $route['infolang']              = 'LanguageController/infoLanguage';
 $route['lang/(:any)']              = 'LanguageController/$1';
 
 {
-	$route['product/read_product']    = 'ProductController/readProduct';
-	$route['product/add_product']     = 'ProductController/addProduct';
+	$route['product/read_product']    	= 'ProductController/readProduct';
+	$route['product/save_product']     	= 'ProductController/saveProduct';
+	$route['product/readedit_product']	= 'ProductController/readEditProduct';
+	$route['product/del_product']		= 'ProductController/delProduct';
 }
 
 $route['employee/(:any)']  			= 'Employee/EmployeeController/$1';
