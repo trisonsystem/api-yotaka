@@ -14,7 +14,6 @@ class HotelController extends CI_Controller {
     }
 
     public function search_hotel(){
-        $this->load->model("MHotel");
         $aData = $this->Decode_TripleDES( $_POST );
     	$data  = $this->MHotel->search_hotel( $aData );
         print_r( json_encode($data) );

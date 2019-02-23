@@ -6,8 +6,6 @@ class EmployeeController extends CI_Controller {
     public function __construct(){
         parent::__construct();
 
-        $this->keyword  = $this->config->config['keyword'];
-        $this->api_url  = $this->config->config['api_url'];
         $this->des_key  = $this->config->config['des_key'];
         $this->load->model('MEmployee');
         $this->load->model('MMaster');
@@ -15,41 +13,58 @@ class EmployeeController extends CI_Controller {
     }
 
     public function search_employee(){
-        $pd = $this->MEmployee->search_employee( $_GET );
-        print_r( json_encode($pd) );
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MEmployee->search_employee( $aData );
+        print_r( json_encode($res) );
     }
 
     public function search_division( $aData = "" ){
-        $aData    = ( isset($_GET['division_id']) ) ? $_GET : $aData ;
-        $arr_data = $this->MMaster->search_division( $aData );
-        return $arr_data;
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MMaster->search_division( $aData );
+        print_r( json_encode($res) );
     }
 
     public function search_department( $aData = "" ){
-        $aData    = ( isset($_GET['department_id']) ) ? $_GET : $aData ;
-        $arr_data = $this->MMaster->search_department( $aData );
-        return $arr_data;
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res    = $this->MMaster->search_department( $aData );
+        print_r( json_encode($res) );
     }
 
     public function search_position( $aData = "" ){
-        $aData    = ( isset($_GET['position_id']) ) ? $_GET : $aData ;
-        $arr_data = $this->MMaster->search_position( $aData );
-        return $arr_data;
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res    = $this->MMaster->search_position( $aData );
+        print_r( json_encode($res) );
     }
 
     public function search_status_employee( $aData = "" ){
-        $aData    = ( isset($_GET['status_employee_id']) ) ? $_GET : $aData ;
-        $arr_data = $this->MMaster->search_status_employee( $aData );
-        return $arr_data;
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res    = $this->MEmployee->search_status_employee( $aData );
+        print_r( json_encode($res) );
     }
 
     public function save_data(){
-        $res = $this->MEmployee->save_data( $_POST );
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MEmployee->save_data( $aData );
         print_r( json_encode($res) );
     }
 
     public function chang_status(){
-        $res = $this->MEmployee->chang_status( $_POST );
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MEmployee->chang_status( $aData );
         print_r( json_encode($res) );
     }
+
+    public function Decode_TripleDES( $aData ){
+        $data = (isset($aData["data"])) ? $aData["data"] : $aData;
+        $dataReceive = TripleDES::decryptText($data, $this->des_key);
+        $dataReceive = json_decode($dataReceive, true);
+
+        if ($dataReceive == '') {
+            $arrRetrun = array("sflag" => false, "msg" => "Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+        return $dataReceive;
+    }
+
 }

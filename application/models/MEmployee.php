@@ -119,7 +119,7 @@ class MEmployee extends CI_Model {
 	public function search_status_employee( $aData ){
 		$WHERE  = "";
 		if ($aData != "") {
-			$WHERE  = ( $aData["status_employee_id"] == "" ) ? "" : " AND SE.id='".$aData["status_employee_id"]."'";
+			$WHERE  = ( !isset($aData["status_employee_id"] ) ) ? "" : " AND SE.id='".$aData["status_employee_id"]."'";
 		}
 		$sql 	= " SELECT  SE.*
 					FROM m_status_employee AS SE
@@ -176,6 +176,7 @@ class MEmployee extends CI_Model {
 			if ($this->db->replace('employee', $aSave)) {
 				$aReturn["flag"] = true;
 				$aReturn["msg"] = "success";
+				$aReturn["code"] = $code;
 			}else{
 				$aReturn["flag"] = false;
 				$aReturn["msg"] = "Error SQL !!!";
@@ -187,33 +188,18 @@ class MEmployee extends CI_Model {
 			if ($this->db->update('employee', $aSave)) {
 				$aReturn["flag"] = true;
 				$aReturn["msg"] = "success";
+				$aReturn["code"] = $code;
 			}else{
 				$aReturn["flag"] = false;
 				$aReturn["msg"] = "Error SQL !!!";
 			}
 		}
 
-		if ( count( explode("temp", $aData["txtEmployeeProfile"]) ) > 1 ) {
-		 	$this->copy_img($aData["txtEmployeeProfile"], $n_path, $fodel);
-		}
+		
 		// debug($aSave);
 
 		return $aReturn;
 
-	}
-
-	function copy_img( $file_name,  $n_path , $n_foder){
-        if ( !file_exists($n_foder) ) {
-             mkdir ($n_foder, 0755);
-        }
-        
-       if(copy($file_name, $n_path)){ 
-       	  unlink($file_name);
-          return 1;
-       }else{
-          return 0;
-       }
-      
 	}
 
 	function convert_date_to_base($str_date){
