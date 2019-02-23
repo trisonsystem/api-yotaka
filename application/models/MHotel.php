@@ -37,7 +37,7 @@ class MHotel extends CI_Model {
 					LEFT JOIN m_quarter 	AS QT ON QT.id = HT.m_quarter_id
 					LEFT JOIN `m_ province` AS PV ON PV.id = HT.m_province_id
 					LEFT JOIN m_amphur 		AS AP ON AP.id = HT.m_amphur_id
-					WHERE 1 = 1  $WHERE
+					WHERE 1 = 1  $WHERE 
 					ORDER BY HT.id DESC
 					LIMIT $LIMIT";
 		$query 	= $this->db->query($sql);
@@ -145,6 +145,7 @@ class MHotel extends CI_Model {
 		$WHERE  = "";
 		if ($aData != "") {
 			$WHERE  = ( !isset( $aData["status_hotel_id"] ) ) ? "" : " AND id='".$aData["status_hotel_id"]."'";
+			$WHERE  .= " AND hotel_id='".$aData["hotel_id"]."'";
 		}
 		$sql 	= " SELECT  * FROM m_status_hotel WHERE 1 = 1  $WHERE ORDER BY id ASC";
 		$query 	= $this->db->query($sql);

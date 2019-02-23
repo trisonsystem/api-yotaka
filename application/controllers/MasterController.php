@@ -27,7 +27,7 @@ class MasterController extends CI_Controller {
     public function search_hotel_use(){
     	$this->load->model('MMaster');
     	$aData = $this->Decode_TripleDES( $_POST );
-        $data  = $this->MMaster->search_hotel_use( $aData );
+        $data  = $this->MMaster->search_hotel_all( $aData );
         print_r( json_encode($data) );
     }
 }
