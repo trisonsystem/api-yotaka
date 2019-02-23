@@ -227,7 +227,7 @@ class MMaster extends CI_Model {
 			$WHERE  .= ( !isset($aData["hotel_id"]) ) 		? "" : " AND id ='".$aData["hotel_id"]."'";
 			$WHERE  .= ( !isset($aData["hotel_code"]) )    	? "" : " AND code ='".$aData["hotel_code"]."'";
 		}
-		$sql 	= " SELECT * FROM hotel WHERE 1 = 1  $WHERE AND m_status_hotel_id = 1 ORDER BY id ASC";
+		$sql 	= " SELECT * FROM hotel WHERE 1 = 1  $WHERE AND m_status_hotel_id != 9 ORDER BY id ASC";
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();
