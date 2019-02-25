@@ -6,45 +6,46 @@ class MMdivision extends CI_Model
         parent::__construct();
     }
 
-    public function search_divcode( $aData ){
-		$WHERE  = "";
-		if ($aData != "") {
-			$WHERE  = ( $aData["division_code"] == "" ) ? "" : " AND DV.code='".$aData["division_code"]."'";
-		}
-		$sql 	= " SELECT  DV.code
-					FROM m_division AS DV
-					WHERE 1 = 1  $WHERE
-					ORDER BY DV.code ASC";
-		$query 	= $this->db->query($sql);
+  //   public function search_divcode( $aData ){
+  //   	$WHERE  = "";
+		// if ($aData != "") {
+		// 	$WHERE  = ( $aData["division_code"] == "" ) ? "" : " AND DV.code='".$aData["division_code"]."'";
+		// 	$WHERE  .= " AND DV.hotel_id='".$aData["hotel_id"]."'";
+		// }
+		// $sql 	= " SELECT  DV.code
+		// 			FROM m_division AS DV
+		// 			WHERE 1 = 1  $WHERE
+		// 			ORDER BY DV.code ASC";
+		// $query 	= $this->db->query($sql);
 		
-		$arr = array();
-		foreach ($query->result_array() as $key => $value) {
-			$arr[] = $value;
-		}
+		// $arr = array();
+		// foreach ($query->result_array() as $key => $value) {
+		// 	$arr[] = $value;
+		// }
 
-		// debug($arr);
-		return $arr;
-    }
+		// // debug($arr);
+		// return $arr;
+  //   }
     
-    public function search_divname( $aData ){
-        $WHERE  = "";
-		if ($aData != "") {
-			$WHERE  = ( $aData["division_name"] == "" ) ? "" : " AND DV.name='".$aData["division_name"]."'";
-		}
-		$sql 	= " SELECT  DV.name
-					FROM m_division AS DV
-					WHERE 1 = 1  $WHERE
-					ORDER BY DV.name ASC";
-		$query 	= $this->db->query($sql);
+  //   public function search_divname( $aData ){
+  //       $WHERE  = "";
+		// if ($aData != "") {
+		// 	$WHERE  = ( $aData["division_name"] == "" ) ? "" : " AND DV.name='".$aData["division_name"]."'";
+		// }
+		// $sql 	= " SELECT  DV.name
+		// 			FROM m_division AS DV
+		// 			WHERE 1 = 1  $WHERE
+		// 			ORDER BY DV.name ASC";
+		// $query 	= $this->db->query($sql);
 		
-		$arr = array();
-		foreach ($query->result_array() as $key => $value) {
-			$arr[] = $value;
-		}
+		// $arr = array();
+		// foreach ($query->result_array() as $key => $value) {
+		// 	$arr[] = $value;
+		// }
 
-		// debug($arr);
-		return $arr;
-    }
+		// // debug($arr);
+		// return $arr;
+  //   }
 
     public function search_division( $aData ){
         $lm = 15;
@@ -84,12 +85,12 @@ class MMdivision extends CI_Model
 		$aSave["name"] 	= $aData["txtDivisionName"];
         $aSave["status"] 	= "1";
         if ($aData['txtDivision_id'] == "0") {
-            
+            $aSave["hotel_id"] 		= $aData["hotel_id"];
             $aSave["create_date"] 	= date("Y-m-d H:i:s");
-            $aSave["create_by"] 	= "zztop";
+            $aSave["create_by"] 	= $aData["user"];
             $aSave["update_date"] 	= date("Y-m-d H:i:s");
-            $aSave["update_by"] 	= "zztop";
-
+            $aSave["update_by"] 	= $aData["user"];
+			
             if ($this->db->replace('m_division', $aSave)) {
 				$aReturn["flag"] = true;
 				$aReturn["msg"] = "success";
@@ -100,7 +101,7 @@ class MMdivision extends CI_Model
         } else {
             
             $aSave["update_date"] 			= date("Y-m-d H:i:s");
-            $aSave["update_by"] 			= "zztop";
+            $aSave["update_by"] 			= $aData["user"];
             $this->db->where("id", $aData["txtDivision_id"] );
 			if ($this->db->update('m_division', $aSave)) {
 				$aReturn["flag"] = true;
@@ -114,4 +115,20 @@ class MMdivision extends CI_Model
         return $aReturn;
 
     }
+
+    public function chang_status( $aData ){
+		$aSave["update_date"] 			= date("Y-m-d H:i:s");
+		$aSave["update_by"] 			= $aData["user"];
+		$aSave["status"] 	= $aData["status"];
+		$this->db->where("id", $aData["division_id"] );
+		if ($this->db->update('m_division', $aSave)) {
+			$aReturn["flag"] = true;
+			$aReturn["msg"] = "success";
+		}else{
+			$aReturn["flag"] = false;
+			$aReturn["msg"] = "Error SQL !!!";
+		}
+
+		return $aReturn;
+	}
 }
