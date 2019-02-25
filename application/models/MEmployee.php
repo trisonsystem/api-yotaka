@@ -124,7 +124,6 @@ class MEmployee extends CI_Model {
 		$WHERE  = "";
 		if ($aData != "") {
 			$WHERE  = ( !isset($aData["status_employee_id"] ) ) ? "" : " AND SE.id='".$aData["status_employee_id"]."'";
-			$WHERE  .= " AND SE.hotel_id='".$aData["hotel_id"]."'";
 		}
 		$sql 	= " SELECT  SE.*
 					FROM m_status_employee AS SE
