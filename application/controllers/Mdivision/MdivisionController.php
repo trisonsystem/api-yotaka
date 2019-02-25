@@ -32,15 +32,6 @@ class MdivisionController extends CI_Controller
         $res     = $this->MMdivision->search_division( $aData );
         print_r( json_encode($res) );
     }
-   
-    // public function search_divcode( $aData = "" ){
-    //     debug($_POST, true);
-    //     $aData    = $this->Decode_TripleDES( $_POST );
-    //     $res = $this->MMdivision->search_divcode( $aData );
-    //     print_r( json_encode($res) );
-        
-    //     // debug($arr_data);
-    // }
 
     public function save_data(){
         $aData = $this->Decode_TripleDES( $_POST );

@@ -6,47 +6,6 @@ class MMdivision extends CI_Model
         parent::__construct();
     }
 
-  //   public function search_divcode( $aData ){
-  //   	$WHERE  = "";
-		// if ($aData != "") {
-		// 	$WHERE  = ( $aData["division_code"] == "" ) ? "" : " AND DV.code='".$aData["division_code"]."'";
-		// 	$WHERE  .= " AND DV.hotel_id='".$aData["hotel_id"]."'";
-		// }
-		// $sql 	= " SELECT  DV.code
-		// 			FROM m_division AS DV
-		// 			WHERE 1 = 1  $WHERE
-		// 			ORDER BY DV.code ASC";
-		// $query 	= $this->db->query($sql);
-		
-		// $arr = array();
-		// foreach ($query->result_array() as $key => $value) {
-		// 	$arr[] = $value;
-		// }
-
-		// // debug($arr);
-		// return $arr;
-  //   }
-    
-  //   public function search_divname( $aData ){
-  //       $WHERE  = "";
-		// if ($aData != "") {
-		// 	$WHERE  = ( $aData["division_name"] == "" ) ? "" : " AND DV.name='".$aData["division_name"]."'";
-		// }
-		// $sql 	= " SELECT  DV.name
-		// 			FROM m_division AS DV
-		// 			WHERE 1 = 1  $WHERE
-		// 			ORDER BY DV.name ASC";
-		// $query 	= $this->db->query($sql);
-		
-		// $arr = array();
-		// foreach ($query->result_array() as $key => $value) {
-		// 	$arr[] = $value;
-		// }
-
-		// // debug($arr);
-		// return $arr;
-  //   }
-
     public function search_division( $aData ){
         $lm = 15;
         if ( !isset($aData["page"]) ) 		 	    { $aData["page"] 				= 1;}
@@ -60,6 +19,7 @@ class MMdivision extends CI_Model
         $WHERE  .= ( $aData["division_code"] 		== "" ) ? "" : " AND DV.code='".$aData["division_code"]."'";
         $WHERE  .= ( $aData["division_name"] 		== "" ) ? "" : " AND DV.name='".$aData["division_name"]."'";
         $WHERE  .= ( $aData["division_status"] 		== "" ) ? "" : " AND DV.status='".$aData["division_status"]."'";
+        $WHERE  .= " AND DV.hotel_id='".$aData["hotel_id"]."'";
 
         $sql = "SELECT DV.*
                 FROM m_division AS DV
@@ -90,7 +50,7 @@ class MMdivision extends CI_Model
             $aSave["create_by"] 	= $aData["user"];
             $aSave["update_date"] 	= date("Y-m-d H:i:s");
             $aSave["update_by"] 	= $aData["user"];
-			
+
             if ($this->db->replace('m_division', $aSave)) {
 				$aReturn["flag"] = true;
 				$aReturn["msg"] = "success";
