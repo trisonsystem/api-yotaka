@@ -37,7 +37,7 @@ class MHotel extends CI_Model {
 					LEFT JOIN m_quarter 	AS QT ON QT.id = HT.m_quarter_id
 					LEFT JOIN `m_ province` AS PV ON PV.id = HT.m_province_id
 					LEFT JOIN m_amphur 		AS AP ON AP.id = HT.m_amphur_id
-					WHERE 1 = 1  $WHERE
+					WHERE 1 = 1  $WHERE 
 					ORDER BY HT.id DESC
 					LIMIT $LIMIT";
 		$query 	= $this->db->query($sql);
@@ -80,9 +80,9 @@ class MHotel extends CI_Model {
 			$aSave["code"] 					= $code;
 			$aSave["m_status_hotel_id"]		= "1";
 			$aSave["create_date"] 			= date("Y-m-d H:i:s");
-			$aSave["create_by"] 			= "zztop";
+			$aSave["create_by"] 			= $aData["user"];
 			$aSave["update_date"] 			= date("Y-m-d H:i:s");
-			$aSave["update_by"] 			= "zztop";
+			$aSave["update_by"] 			= $aData["user"];
 
 			if ($this->db->replace('hotel', $aSave)) {
 				$aReturn["flag"] = true;
@@ -94,7 +94,7 @@ class MHotel extends CI_Model {
 			}
 		}else{
 			$aSave["update_date"] 			= date("Y-m-d H:i:s");
-			$aSave["update_by"] 			= "zztop";
+			$aSave["update_by"] 			= $aData["user"];
 			$this->db->where("id", $aData["txtHotel_id"] );
 			if ($this->db->update('hotel', $aSave)) {
 				$aReturn["flag"] = true;
@@ -145,6 +145,7 @@ class MHotel extends CI_Model {
 		$WHERE  = "";
 		if ($aData != "") {
 			$WHERE  = ( !isset( $aData["status_hotel_id"] ) ) ? "" : " AND id='".$aData["status_hotel_id"]."'";
+			$WHERE  .= " AND hotel_id='".$aData["hotel_id"]."'";
 		}
 		$sql 	= " SELECT  * FROM m_status_hotel WHERE 1 = 1  $WHERE ORDER BY id ASC";
 		$query 	= $this->db->query($sql);
@@ -160,7 +161,7 @@ class MHotel extends CI_Model {
 
 	function chang_status( $aData ){
 		$aSave["update_date"] 			= date("Y-m-d H:i:s");
-		$aSave["update_by"] 			= "zztop";
+		$aSave["update_by"] 			= $aData["user"];
 		$aSave["m_status_hotel_id"] 	= $aData["status"];
 		$this->db->where("id", $aData["hotel_id"] );
 		if ($this->db->update('hotel', $aSave)) {

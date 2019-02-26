@@ -29,6 +29,7 @@ class MEmployee extends CI_Model {
 		$WHERE  .= ( $aData["department_id"] 	== "" ) ? "" : " AND DP.id='".$aData["department_id"]."'";
 		$WHERE  .= ( $aData["division_id"] 		== "" ) ? "" : " AND DV.id='".$aData["division_id"]."'";
 		$WHERE  .= ( $aData["employee_status"] 	== "" ) ? "" : " AND EM.m_status_employee_id='".$aData["employee_status"]."'";
+		$WHERE  .= " AND EM.hotel_id='".$aData["hotel_id"]."'";
 
 		$sql 	= "SELECT  EM.*, 
 						PS.name AS position_name, 
@@ -58,6 +59,7 @@ class MEmployee extends CI_Model {
 		$WHERE  = "";
 		if ($aData != "") {
 			$WHERE  = ( $aData["division_id"] == "" ) ? "" : " AND DV.id='".$aData["division_id"]."'";
+			$WHERE  .= " AND DV.hotel_id='".$aData["hotel_id"]."'";
 		}
 		$sql 	= " SELECT  DV.*
 					FROM m_division AS DV
@@ -78,6 +80,7 @@ class MEmployee extends CI_Model {
 		if ($aData != "") {
 			$WHERE  .= ( !isset($aData["department_id"]) ) ? "" : " AND DP.id='".$aData["department_id"]."'";
 			$WHERE  .= ( !isset($aData["division_id"]) )   ? "" : " AND DP.m_division_id='".$aData["division_id"]."'";
+			$WHERE  .= " AND DP.hotel_id='".$aData["hotel_id"]."'";
 		}
 		$sql 	= " SELECT  DP.*
 					FROM m_department AS DP
@@ -100,6 +103,7 @@ class MEmployee extends CI_Model {
 			$WHERE  .= ( !isset($aData["position_id"]) )   ? "" : " AND PS.id='".$aData["position_id"]."'";
 			$WHERE  .= ( !isset($aData["division_id"]) )   ? "" : " AND PS.m_division_id='".$aData["division_id"]."'";
 			$WHERE  .= ( !isset($aData["department_id"]) ) ? "" : " AND PS.m_department_id='".$aData["department_id"]."'";
+			$WHERE  .= " AND PS.hotel_id='".$aData["hotel_id"]."'";
 		}
 		$sql 	= " SELECT  PS.*
 					FROM m_position AS PS
@@ -157,7 +161,7 @@ class MEmployee extends CI_Model {
 		$aSave["address"] 			= $aData["txtAddress"];
 		$aSave["tel"] 				= $aData["txtTel"];
 		$aSave["email"] 			= $aData["txtEmail"];
-		$aSave["hotel_id"] 			= $aData["slHotel"];
+		$aSave["hotel_id"] 			= $aData["hotel_id"];
 		$aSave["rights"] 			= $aData["slRights"];
 		$aSave["birthday"] 			= $this->convert_date_to_base( $aData["txtBirthday"] );
 		if ($aData["txtEmployeeProfile"] != "0") {
@@ -169,9 +173,9 @@ class MEmployee extends CI_Model {
 			$aSave["password"] 				= md5($aData["txtPassWord"]);
 			$aSave["m_status_employee_id"] 	= "1";
 			$aSave["create_date"] 			= date("Y-m-d H:i:s");
-			$aSave["create_by"] 			= "zztop";
+			$aSave["create_by"] 			= $aData["user"];
 			$aSave["update_date"] 			= date("Y-m-d H:i:s");
-			$aSave["update_by"] 			= "zztop";
+			$aSave["update_by"] 			= $aData["user"];
 
 			if ($this->db->replace('employee', $aSave)) {
 				$aReturn["flag"] = true;
@@ -183,7 +187,7 @@ class MEmployee extends CI_Model {
 			}
 		}else{
 			$aSave["update_date"] 			= date("Y-m-d H:i:s");
-			$aSave["update_by"] 			= "zztop";
+			$aSave["update_by"] 			= $aData["user"];
 			$this->db->where("id", $aData["txtEmployee_id"] );
 			if ($this->db->update('employee', $aSave)) {
 				$aReturn["flag"] = true;
@@ -237,7 +241,7 @@ class MEmployee extends CI_Model {
 
 	function chang_status( $aData ){
 		$aSave["update_date"] 			= date("Y-m-d H:i:s");
-		$aSave["update_by"] 			= "zztop";
+		$aSave["update_by"] 			= $aData["user"];
 		$aSave["m_status_employee_id"] 	= $aData["status"];
 		$this->db->where("id", $aData["employee_id"] );
 		if ($this->db->update('employee', $aSave)) {

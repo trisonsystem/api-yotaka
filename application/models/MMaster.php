@@ -54,7 +54,7 @@ class MMaster extends CI_Model {
 		}
 		$sql 	= " SELECT  DV.*
 					FROM m_division AS DV
-					WHERE 1 = 1  $WHERE
+					WHERE 1 = 1  $WHERE AND DV.hotel_id='".$aData["hotel_id"]."'
 					ORDER BY DV.id ASC";
 		$query 	= $this->db->query($sql);
 		
@@ -75,7 +75,7 @@ class MMaster extends CI_Model {
 		}
 		$sql 	= " SELECT  DP.*
 					FROM m_department AS DP
-					WHERE 1 = 1  $WHERE
+					WHERE 1 = 1  $WHERE AND DP.hotel_id='".$aData["hotel_id"]."'
 					ORDER BY DP.id ASC";
 		$query 	= $this->db->query($sql);
 		
@@ -97,7 +97,7 @@ class MMaster extends CI_Model {
 		}
 		$sql 	= " SELECT  PS.*
 					FROM m_position AS PS
-					WHERE 1 = 1  $WHERE
+					WHERE 1 = 1  $WHERE AND PS.hotel_id='".$aData["hotel_id"]."'
 					ORDER BY PS.id ASC";
 		$query 	= $this->db->query($sql);
 		
@@ -117,8 +117,8 @@ class MMaster extends CI_Model {
 		}
 		$sql 	= " SELECT  SE.*
 					FROM m_status_employee AS SE
-					WHERE 1 = 1  $WHERE
-					ORDER BY SE.id ASC";
+					WHERE 1 = 1  $WHERE SE.hotel_id='".$aData["hotel_id"]."'
+					ORDER BY SE.id ASC"; 
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();
@@ -227,7 +227,21 @@ class MMaster extends CI_Model {
 			$WHERE  .= ( !isset($aData["hotel_id"]) ) 		? "" : " AND id ='".$aData["hotel_id"]."'";
 			$WHERE  .= ( !isset($aData["hotel_code"]) )    	? "" : " AND code ='".$aData["hotel_code"]."'";
 		}
-		$sql 	= " SELECT * FROM hotel WHERE 1 = 1  $WHERE AND m_status_hotel_id = 1 ORDER BY id ASC";
+		$sql 	= " SELECT * FROM hotel WHERE 1 = 1  $WHERE AND m_status_hotel_id != 9 ORDER BY id ASC";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+		}
+
+		// debug($arr);
+		return $arr;
+	}
+
+	public function search_hotel_all( $aData ){
+		$WHERE  = "";
+		$sql 	= " SELECT * FROM hotel WHERE 1 = 1  $WHERE AND m_status_hotel_id != 9 ORDER BY id ASC";
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();

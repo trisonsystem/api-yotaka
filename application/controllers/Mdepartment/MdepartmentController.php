@@ -1,16 +1,18 @@
 <?php
 header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Origin: *');
 
-class MasterController extends CI_Controller {
-    public $strUrl = "";
-    public function __construct(){
+class MdepartmentController extends CI_Controller
+{
+	public $strUrl = "";
+    public function __construct()
+    {
         parent::__construct();
 
         $this->des_key  = $this->config->config['des_key'];
-        $this->load->model('MEmployee');
-       
-
+        $this->load->model('MDepartment');
     }
+
     public function Decode_TripleDES( $aData ){
         $data = (isset($aData["data"])) ? $aData["data"] : $aData;
         $dataReceive = TripleDES::decryptText($data, $this->des_key);
@@ -23,11 +25,10 @@ class MasterController extends CI_Controller {
         }
         return $dataReceive;
     }
-    
-    public function search_hotel_use(){
-    	$this->load->model('MMaster');
-    	$aData = $this->Decode_TripleDES( $_POST );
-        $data  = $this->MMaster->search_hotel_all( $aData );
-        print_r( json_encode($data) );
+
+    public function search_department( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MDepartment->search_department( $aData );
+        print_r( json_encode($res) );
     }
 }
