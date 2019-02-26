@@ -45,7 +45,6 @@ class MDepartment extends CI_Model
     public function search_division( $aData ){
         $WHERE  = "";
         if ($aData != "") {
-            // $WHERE  = ( $aData["division_id"] == "" ) ? "" : " AND DV.id='".$aData["division_id"]."'";
             $WHERE  .= " AND DV.hotel_id='".$aData["hotel_id"]."'";
         }
         $sql    = " SELECT  DV.*
