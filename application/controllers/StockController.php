@@ -3,9 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // header('Access-Control-Allow-Origin: *');
 
 class StockController extends CI_Controller {
-    public $strUrl = "";
+
     public function __construct(){
         parent::__construct();
+        $this->desKey  = $this->config->config['des_key'];
     }
 
     public function index(){
@@ -15,8 +16,33 @@ class StockController extends CI_Controller {
         $this->load->view('errors/html/error_404',$data); 
     }
 
-    public function show_index(){
-        echo "API V0.0.1";
+    public function readStock(){
+
+        $p_data             = $this->input->post('data');
+        $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
+        $dataReceive        = json_decode($dataReceive,true);
+
+        if($dataReceive == ''){
+            $arrRetrun = array( "sflag"=>false, "msg"=>"Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+
+        ## check param
+        $arrParam = array('page','limit');
+        foreach ($arrParam as $key) {
+            if(!isset($dataReceive[$key])){
+                $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
+                echo json_encode($arrRetrun);
+                return;
+            }
+        }
+        ## --
+
+        $this->load->model('MStock');
+
+        $dataReturn = $this->MStock->readStock($dataReceive);
+        echo json_encode($dataReturn);
     }
 
     public function testapi(){

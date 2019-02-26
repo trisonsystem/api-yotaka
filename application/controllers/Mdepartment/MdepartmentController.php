@@ -2,15 +2,15 @@
 header('Access-Control-Allow-Origin: *');
 // header('Access-Control-Allow-Origin: *');
 
-class MdivisionController extends CI_Controller
+class MdepartmentController extends CI_Controller
 {
-    public $strUrl = "";
+	public $strUrl = "";
     public function __construct()
     {
         parent::__construct();
 
         $this->des_key  = $this->config->config['des_key'];
-        $this->load->model('MMdivision');
+        $this->load->model('MDepartment');
     }
 
     public function Decode_TripleDES( $aData ){
@@ -26,22 +26,9 @@ class MdivisionController extends CI_Controller
         return $dataReceive;
     }
 
-    public function search_division( $aData = "" ){
+    public function search_department( $aData = "" ){
         $aData  = $this->Decode_TripleDES( $_POST );
-        $res     = $this->MMdivision->search_division( $aData );
+        $res     = $this->MDepartment->search_department( $aData );
         print_r( json_encode($res) );
     }
-
-    public function save_data(){
-        $aData = $this->Decode_TripleDES( $_POST );
-        $res   = $this->MMdivision->save_data( $aData );
-        print_r( json_encode($res) );
-    }
-
-    public function chang_status(){
-        $aData = $this->Decode_TripleDES( $_POST );        
-        $res   = $this->MMdivision->chang_status( $aData );
-        print_r( json_encode($res) );
-    }
-    
 }
