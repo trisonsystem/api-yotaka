@@ -62,6 +62,10 @@ $route['lang/(:any)']              = 'LanguageController/$1';
 	$route['product/del_product']		= 'ProductController/delProduct';
 }
 
+{
+	$route['stock/read_stock']    	= 'StockController/readStock';
+}
+
 $route['master/(:any)']  			= 'MasterController/$1';
 $route['employee/(:any)']  			= 'Employee/EmployeeController/$1';
 $route['division/(:any)']  			= 'Mdivision/MdivisionController/$1';
