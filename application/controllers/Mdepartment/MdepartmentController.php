@@ -31,4 +31,22 @@ class MdepartmentController extends CI_Controller
         $res     = $this->MDepartment->search_department( $aData );
         print_r( json_encode($res) );
     }
+
+    public function search_division( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MDepartment->search_division( $aData );
+        print_r( json_encode($res) );
+    }    
+
+    public function save_data(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MDepartment->save_data( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function chang_status(){
+        $aData = $this->Decode_TripleDES( $_POST );        
+        $res   = $this->MDepartment->chang_status( $aData );
+        print_r( json_encode($res) );
+    }
 }
