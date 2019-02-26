@@ -21,11 +21,11 @@ class MDepartment extends CI_Model
         $WHERE  .= ( $aData["department_status"] 	== "" ) ? "" : " AND DP.status='".$aData["department_status"]."'";
         $WHERE  .= " AND DP.hotel_id='".$aData["hotel_id"]."'";
 
-        $sql = "SELECT DP.*
+        $sql = "SELECT DP.*, DV.name AS division_name
                 FROM m_department AS DP
+                LEFT JOIN m_division AS DV ON DP.m_division_id = DV.id
                 WHERE 1 = 1 $WHERE
-                ORDER BY DP.id DESC
-                LIMIT $LIMIT";
+                ORDER BY DP.id DESC LIMIT $LIMIT";
 
         $query 	= $this->db->query($sql);
         $arr = array();
