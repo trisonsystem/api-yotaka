@@ -54,4 +54,10 @@ class RoomController extends CI_Controller {
         print_r( json_encode($res) );
     }
 
+    public function chang_status(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MRoom->chang_status( $aData );
+        print_r( json_encode($res) );
+    }
+
 }
