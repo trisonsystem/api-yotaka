@@ -31,4 +31,10 @@ class MpositionController extends CI_Controller
         $res     = $this->MMposition->search_position( $aData );
         print_r( json_encode($res) );
     }
+
+    public function search_division( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MMposition->search_division( $aData );
+        print_r( json_encode($res) );
+    }    
 }
