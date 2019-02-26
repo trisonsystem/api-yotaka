@@ -35,4 +35,23 @@ class RoomController extends CI_Controller {
         $data  = $this->MRoom->search_type_room( $aData );
         print_r( json_encode($data) );
     }
+
+    public function search_room_item(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $data  = $this->MRoom->search_room_item( $aData );
+        print_r( json_encode($data) );
+    }
+
+    public function search_room_item_list(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $data  = $this->MRoom->search_room_item_list( $aData );
+        print_r( json_encode($data) );
+    }
+
+    public function save_data(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MRoom->save_data( $aData );
+        print_r( json_encode($res) );
+    }
+
 }

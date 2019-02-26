@@ -14,7 +14,7 @@ class MRoom extends CI_Model {
 		}
 		$sql 	= " SELECT  R.* , TR.name AS type_room_name
 					FROM m_room AS R 
-					LEFT JOIN m_type_room AS TR ON R.m_type_room_id = TR.id
+					LEFT JOIN m_room_type AS TR ON R.m_type_room_id = TR.id
 					WHERE 1 = 1  $WHERE ORDER BY R.id ASC";
 		$query 	= $this->db->query($sql);
 		
@@ -33,7 +33,7 @@ class MRoom extends CI_Model {
 			$WHERE  = ( !isset( $aData["type_room_id"] ) ) ? "" : " AND id='".$aData["type_room_id"]."'";
 			$WHERE  .= " AND hotel_id='".$aData["hotel_id"]."'";
 		}
-		$sql 	= " SELECT  * FROM m_type_room WHERE 1 = 1  $WHERE ORDER BY id ASC";
+		$sql 	= " SELECT  * FROM m_room_type WHERE 1 = 1  $WHERE ORDER BY id ASC";
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();
@@ -43,5 +43,123 @@ class MRoom extends CI_Model {
 
 		// debug($arr);
 		return $arr;
+	}
+
+	public function search_room_item( $aData ){
+		$WHERE  = "";
+		if ($aData != "") {
+			$WHERE  = ( !isset( $aData["room_item_id"] ) ) ? "" : " AND id='".$aData["room_item_id"]."'";
+			$WHERE  .= " AND hotel_id='".$aData["hotel_id"]."'";
+		}
+		$sql 	= " SELECT  * FROM m_room_item WHERE 1 = 1  $WHERE ORDER BY id ASC";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+		}
+
+		// debug($arr);
+		return $arr;
+	}
+
+	public function search_room_item_list( $aData ){
+		$WHERE  = "";
+		if ($aData != "") {
+			$WHERE  = ( !isset( $aData["room_item_id"] ) ) ? "" : " AND id='".$aData["room_item_id"]."'";
+			$WHERE  = ( !isset( $aData["room_id"] ) ) ? "" : " AND m_room_id='".$aData["room_id"]."'";
+			$WHERE  .= " AND hotel_id='".$aData["hotel_id"]."'";
+		}
+		$sql 	= " SELECT  * FROM m_room_item_list WHERE 1 = 1  $WHERE ORDER BY id ASC";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+		}
+
+		// debug($arr);
+		return $arr;
+	}
+
+	public function save_data( $aData ){
+		$aReturn = array();
+        $aSave 	 = array();
+
+        $arrParam = array('txtCode','txtName','hotel_id','slRoomType','txtPrice','txtRemark','txtRoom_id');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
+        $room_id = $aData["txtRoom_id"];
+		$aSave["code"] 				= $aData["txtCode"];
+		$aSave["name"] 				= $aData["txtName"];
+		$aSave["hotel_id"] 			= $aData["hotel_id"];
+		$aSave["m_type_room_id"] 	= $aData["slRoomType"];
+		$aSave["price"] 			= $aData["txtPrice"];
+		$aSave["remark"] 			= $aData["txtRemark"];
+		if ($aData["txtRoom_id"] == "0") {
+			$aSave["create_date"] 			= date("Y-m-d H:i:s");
+			$aSave["create_by"] 			= $aData["user"];
+			$aSave["update_date"] 			= date("Y-m-d H:i:s");
+			$aSave["update_by"] 			= $aData["user"];
+
+			$aSave["status"] 				= "close_status";
+
+			if ($this->db->insert('m_room', $aSave)) {
+				$aReturn["flag"] = true;
+				$aReturn["msg"] = "success";
+
+				$room_id = $this->db->insert_id();
+			}else{
+				$aReturn["flag"] = false;
+				$aReturn["msg"] = "Error SQL !!!";
+			}
+		}else{
+			$aSave["update_date"] 			= date("Y-m-d H:i:s");
+			$aSave["update_by"] 			= $aData["user"];
+			$this->db->where("id", $aData["txtRoom_id"] );
+			if ($this->db->update('m_room', $aSave)) {
+				$aReturn["flag"] = true;
+				$aReturn["msg"] = "success";
+			}else{
+				$aReturn["flag"] = false;
+				$aReturn["msg"] = "Error SQL !!!";
+			}
+		}
+
+		if ($aReturn["flag"]) {
+			if ($aData["txtRoom_id"] != "0") {
+				$this->db->where("hotel_id", $aData["hotel_id"] );
+				$this->db->where("m_room_id" , $room_id );
+				$this->db->delete('m_room_item_list');
+			}
+
+			for ($i=1; $i <= $aData["txtCountItem"]; $i++) {
+				if (isset($aData["slItem_".$i])) {
+					$aSave 	 = array();
+					$aSave["m_room_item_id"] 		= $aData["slItem_".$i];
+					$aSave["qty"] 					= $aData["txtQty_".$i];
+					$aSave["m_room_id"] 			= $room_id;
+					$aSave["hotel_id"] 				= $aData["hotel_id"];
+					$aSave["status"] 				= "1";
+					$aSave["create_date"] 			= date("Y-m-d H:i:s");
+					$aSave["create_by"] 			= $aData["user"];
+					$aSave["update_date"] 			= date("Y-m-d H:i:s");
+					$aSave["update_by"] 			= $aData["user"];
+					$this->db->insert('m_room_item_list', $aSave);
+				}
+			}
+			
+		}
+
+		
+		// debug($aSave);
+
+		return $aReturn;
+
 	}
 }
