@@ -1,18 +1,16 @@
 <?php
 header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Origin: *');
 
-class LanguageController extends CI_Controller {
-    public function __construct(){
+class LanguageController extends CI_Controller
+{
+    public $strUrl = "";
+    public function __construct()
+    {
         parent::__construct();
 
         $this->des_key  = $this->config->config['des_key'];
-    }
-
-    public function getLang( $aData = "" ){ 
         $this->load->model('MLanguage');
-        $aData  = $this->Decode_TripleDES( $_POST );
-        $res     = $this->MLanguage->getLang( $aData );
-        print_r( json_encode($res) );
     }
 
     public function Decode_TripleDES( $aData ){
@@ -26,5 +24,11 @@ class LanguageController extends CI_Controller {
             return;
         }
         return $dataReceive;
+    }
+
+    public function search_language( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MLanguage->search_language( $aData );
+        print_r( json_encode($res) );
     }
 }

@@ -79,4 +79,36 @@ class MLanguage extends CI_Model
         // debug($arr);
         return $arr;
     }
+
+
+    // *********************************************************************************************
+
+    public function search_language( $aData ){
+        $lm = 15;
+        if ( !isset($aData["page"]) )               { $aData["page"]                = 1;}
+        if ( !isset($aData["language_word"]) )      { $aData["language_word"]   = "";}
+        if ( !isset($aData["language_en"]) )      { $aData["language_en"]   = "";}
+        if ( !isset($aData["language_th"]) )    { $aData["language_th"]     = "";}
+
+        $LIMIT   = ( $aData["page"]     == "" ) ? "0, $lm" : (($aData["page"] * $lm) - $lm).",$lm" ;
+
+        $WHERE   = "";
+        $WHERE  .= ( $aData["language_word"]        == "" ) ? "" : " AND LG.word LIKE '%".$aData["language_word"]."%'";
+        $WHERE  .= ( $aData["language_en"]        == "" ) ? "" : " AND LG.en LIKE '%".$aData["language_en"]."%'";
+        $WHERE  .= ( $aData["language_th"]        == "" ) ? "" : " AND LG.th='".$aData["language_th"]."'";
+
+        $sql = "SELECT *
+                FROM language AS LG
+                WHERE 1 = 1 $WHERE
+                ORDER BY LG.word DESC LIMIT $LIMIT";
+
+        $query  = $this->db->query($sql);
+        $arr = array();
+        foreach ($query->result_array() as $key => $value) {
+            $arr[] = $value;
+        }
+        $arr["limit"] = $lm;
+        // debug($arr);
+        return $arr;
+    }
 }
