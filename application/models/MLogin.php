@@ -12,7 +12,7 @@ class MLogin extends CI_Model {
 		$password   = md5($aData["u_password"]);
 		$ip 		= $aData["u_ip"];
 
-		$sql 		= "select * from employee where username ='".$username."' AND password = '".$password."'";
+		$sql 		= "select * from m_employee where username ='".$username."' AND password = '".$password."'";
 		$result 	= $this->db->query($sql);
 		$checkAuto  = $result->num_rows();
 		$key_random = md5(generateRandomString(10));
@@ -58,7 +58,7 @@ class MLogin extends CI_Model {
 		$username   = $aData["u_username"];
 		$key_token  = $aData["key_token"];
 
-		$sql 		= "select * from employee where username ='".$username."' AND key_token = '".$key_token."'";
+		$sql 		= "select * from m_employee where username ='".$username."' AND key_token = '".$key_token."'";
 		$result 	= $this->db->query($sql);
 		$checkAuto  = $result->num_rows();
         if($checkAuto > 0){

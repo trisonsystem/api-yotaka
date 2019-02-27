@@ -77,6 +77,7 @@ $route['hotel/(:any)']  			= 'Hotel/HotelController/$1';
 $route['language/(:any)']  			= 'Language/LanguageController/$1';
 $route['login/(:any)']  			= 'LoginController/$1';
 $route['room/(:any)']  				= 'Room/RoomController/$1';
+$route['customer/(:any)']  			= 'Customer/CustomerController/$1';
 
 $route['404_override'] = '';
 $route[] = FALSE;

@@ -36,7 +36,7 @@ class MEmployee extends CI_Model {
 						DP.name AS department_name,
 						DV.name AS division_name,
 						SE.name AS status_name
-					FROM employee AS EM
+					FROM m_employee AS EM
 					LEFT JOIN m_position 	AS PS ON PS.id = EM.m_position_id
 					LEFT JOIN m_department 	AS DP ON DP.id = EM.m_department_id
 					LEFT JOIN m_division 	AS DV ON DV.id = EM.m_division_id
@@ -177,7 +177,7 @@ class MEmployee extends CI_Model {
 			$aSave["update_date"] 			= date("Y-m-d H:i:s");
 			$aSave["update_by"] 			= $aData["user"];
 
-			if ($this->db->replace('employee', $aSave)) {
+			if ($this->db->replace('m_employee', $aSave)) {
 				$aReturn["flag"] = true;
 				$aReturn["msg"] = "success";
 				$aReturn["code"] = $code;
@@ -189,7 +189,7 @@ class MEmployee extends CI_Model {
 			$aSave["update_date"] 			= date("Y-m-d H:i:s");
 			$aSave["update_by"] 			= $aData["user"];
 			$this->db->where("id", $aData["txtEmployee_id"] );
-			if ($this->db->update('employee', $aSave)) {
+			if ($this->db->update('m_employee', $aSave)) {
 				$aReturn["flag"] = true;
 				$aReturn["msg"] = "success";
 				$aReturn["code"] = $code;
@@ -222,7 +222,7 @@ class MEmployee extends CI_Model {
 					FROM m_division AS DV
 					LEFT JOIN m_department AS DP ON DV.id = DP.m_division_id
 					LEFT JOIN m_position   AS PS ON DV.id = DP.m_division_id AND DP.id = PS.m_department_id
-					LEFT JOIN employee     AS EM ON EM.code LIKE CONCAT(DV.code ,DP.code, PS.code,$time, '%')";
+					LEFT JOIN m_employee     AS EM ON EM.code LIKE CONCAT(DV.code ,DP.code, PS.code,$time, '%')";
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();
@@ -244,7 +244,7 @@ class MEmployee extends CI_Model {
 		$aSave["update_by"] 			= $aData["user"];
 		$aSave["m_status_employee_id"] 	= $aData["status"];
 		$this->db->where("id", $aData["employee_id"] );
-		if ($this->db->update('employee', $aSave)) {
+		if ($this->db->update('m_employee', $aSave)) {
 			$aReturn["flag"] = true;
 			$aReturn["msg"] = "success";
 		}else{

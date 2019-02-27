@@ -7,7 +7,7 @@ class MRoom extends CI_Model {
 	}
 	
 	public function search_room( $aData ){
-		$lm = 3;
+		$lm = 15;
 		if ( !isset($aData["page"]) ) 		 	{ $aData["page"] 				= 1;}
 		if ( !isset($aData["room_id"]) ) 		{ $aData["room_id"] 			= "";}
 		if ( !isset($aData["room_code"]) ) 		{ $aData["room_code"] 			= "";}
