@@ -45,8 +45,9 @@ class MMdivision extends CI_Model
         // debug($aData,true);
         $aSave["code"] 	= $aData["txtDivisionCode"];
 		$aSave["name"] 	= $aData["txtDivisionName"];
-        $aSave["status"] 	= "1";
+       
         if ($aData['txtDivision_id'] == "0") {
+            $aSave["status"]   = "1";
             $aSave["hotel_id"] 		= $aData["hotel_id"];
             $aSave["create_date"] 	= date("Y-m-d H:i:s");
             $aSave["create_by"] 	= $aData["user"];
@@ -61,7 +62,7 @@ class MMdivision extends CI_Model
 				$aReturn["msg"] = "Error SQL !!!";
 			}
         } else {
-            
+            $aSave["status"]  = $aData["txtDivision_status"];
             $aSave["update_date"] 			= date("Y-m-d H:i:s");
             $aSave["update_by"] 			= $aData["user"];
             $this->db->where("id", $aData["txtDivision_id"] );

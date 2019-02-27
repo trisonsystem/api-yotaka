@@ -68,8 +68,9 @@ class MDepartment extends CI_Model
         $aSave["code"]  = $aData["textDepartmentCode"];
         $aSave["name"]  = $aData["textDepartmentName"];
         $aSave["m_division_id"]  = $aData["sleName_Division"];
-        $aSave["status"]    = "1";
+        
         if ($aData['txtDepartment_id'] == "0") {
+            $aSave["status"]    = "1";
             $aSave["hotel_id"]      = $aData["hotel_id"];
             $aSave["create_date"]   = date("Y-m-d H:i:s");
             $aSave["create_by"]     = $aData["user"];
@@ -84,7 +85,7 @@ class MDepartment extends CI_Model
                 $aReturn["msg"] = "Error SQL !!!";
             }
         } else {
-            
+            $aSave["status"]    = $aData["txtDepartment_status"];
             $aSave["update_date"]           = date("Y-m-d H:i:s");
             $aSave["update_by"]             = $aData["user"];
             $this->db->where("id", $aData["txtDepartment_id"] );

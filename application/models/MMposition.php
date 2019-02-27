@@ -71,8 +71,9 @@ class MMposition extends CI_Model
         $aSave["name"]  = $aData["etxtPositionName"];
         $aSave["m_division_id"]  = $aData["eslPositionDivision"];
         $aSave["m_department_id"]  = $aData["eslPositionDepartment"];
-        $aSave["status"]    = "1";
+        
         if ($aData['txtPosition_id'] == "0") {
+            $aSave["status"]    = "1";
             $aSave["hotel_id"]      = $aData["hotel_id"];
             $aSave["create_date"]   = date("Y-m-d H:i:s");
             $aSave["create_by"]     = $aData["user"];
@@ -87,7 +88,7 @@ class MMposition extends CI_Model
                 $aReturn["msg"] = "Error SQL !!!";
             }
         } else {
-            
+            $aSave["status"]    = $aData["txtPosition_status"];
             $aSave["update_date"]           = date("Y-m-d H:i:s");
             $aSave["update_by"]             = $aData["user"];
             $this->db->where("id", $aData["txtPosition_id"] );
