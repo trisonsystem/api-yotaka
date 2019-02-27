@@ -26,7 +26,7 @@ class MLogin extends CI_Model {
 				$aUpdate = array();
 				$aUpdate["key_token"] = $key_random;
 				$this->db->where("id", $value["id"]);
-				$this->db->update("employee", $aUpdate);
+				$this->db->update("m_employee", $aUpdate);
 
 				$arr["status_flag"] = true;
 				$arr["level"]   	= $value["rights"];
