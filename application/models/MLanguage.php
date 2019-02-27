@@ -111,4 +111,52 @@ class MLanguage extends CI_Model
         // debug($arr);
         return $arr;
     }
+
+    public function save_data( $aData ){
+        $aReturn = array();
+        $aSave   = array();
+        // debug($aData);
+        
+        $aSave["en"]  = $aData["etxtLanguageEN"];
+        $aSave["th"]  = $aData["etxtLanguageTH"];
+        if ($aData['txtLanguage_word'] == "0") {
+            $aSave["word"]  = $aData["etxtLanguageWord"];
+            if ($this->db->replace('language', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        } else {
+            $this->db->where("id", $aData["txtLanguage_word"] );
+            if ($this->db->update('language', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        }
+
+        return $aReturn;
+
+    }
+
+    public function chang_status( $aData ){
+        // $aSave["update_date"]           = date("Y-m-d H:i:s");
+        // $aSave["update_by"]             = $aData["user"];
+        // $aSave["status"]    = $aData["status"];
+        // debug($aData, true);
+        $this->db->where("word", $aData["language_word"]);
+        if ($this->db->delete('language')) {
+            $aReturn["flag"] = true;
+            $aReturn["msg"] = "success";
+        }else{
+            $aReturn["flag"] = false;
+            $aReturn["msg"] = "Error SQL !!!";
+        }
+
+        return $aReturn;
+    }
 }
