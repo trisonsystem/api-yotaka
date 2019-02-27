@@ -31,4 +31,11 @@ class LanguageController extends CI_Controller
         $res     = $this->MLanguage->search_language( $aData );
         print_r( json_encode($res) );
     }
+
+     public function getLang( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MLanguage->getLang( $aData );
+        print_r( json_encode($res) );
+    }
+      
 }
