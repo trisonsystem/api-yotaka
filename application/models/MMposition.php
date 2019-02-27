@@ -62,4 +62,61 @@ class MMposition extends CI_Model
         // debug($arr);
         return $arr;
     }
+
+    public function save_data( $aData ){
+    	$aReturn = array();
+        $aSave   = array();
+        // debug($aData);
+        $aSave["code"]  = $aData["etxtPositionCode"];
+        $aSave["name"]  = $aData["etxtPositionName"];
+        $aSave["m_division_id"]  = $aData["eslPositionDivision"];
+        $aSave["m_department_id"]  = $aData["eslPositionDepartment"];
+        $aSave["status"]    = "1";
+        if ($aData['txtPosition_id'] == "0") {
+            $aSave["hotel_id"]      = $aData["hotel_id"];
+            $aSave["create_date"]   = date("Y-m-d H:i:s");
+            $aSave["create_by"]     = $aData["user"];
+            $aSave["update_date"]   = date("Y-m-d H:i:s");
+            $aSave["update_by"]     = $aData["user"];
+
+            if ($this->db->replace('m_position', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        } else {
+            
+            $aSave["update_date"]           = date("Y-m-d H:i:s");
+            $aSave["update_by"]             = $aData["user"];
+            $this->db->where("id", $aData["txtPosition_id"] );
+            if ($this->db->update('m_position', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        }
+
+        return $aReturn;
+
+    }
+
+    public function chang_status( $aData ){
+        $aSave["update_date"]           = date("Y-m-d H:i:s");
+        $aSave["update_by"]             = $aData["user"];
+        $aSave["status"]    = $aData["status"];
+        $this->db->where("id", $aData["position_id"] );
+        if ($this->db->update('m_position', $aSave)) {
+            $aReturn["flag"] = true;
+            $aReturn["msg"] = "success";
+        }else{
+            $aReturn["flag"] = false;
+            $aReturn["msg"] = "Error SQL !!!";
+        }
+
+        return $aReturn;
+    }
 }
