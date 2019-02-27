@@ -2,7 +2,7 @@
 header('Access-Control-Allow-Origin: *');
 // header('Access-Control-Allow-Origin: *');
 
-class MdepartmentController extends CI_Controller
+class DepartmentController extends CI_Controller
 {
 	public $strUrl = "";
     public function __construct()
