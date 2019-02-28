@@ -30,4 +30,10 @@ class CustomerController extends CI_Controller {
         $res     = $this->MCustomer->search_customer( $aData );
         print_r( json_encode($res) );
     }
+
+    public function save_data(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MCustomer->save_data( $aData );
+        print_r( json_encode($res) );
+    }
 }

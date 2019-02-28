@@ -142,7 +142,14 @@ class MEmployee extends CI_Model {
 
 	public function save_data( $aData ){
 		$aReturn = array();
-		
+		$arrParam = array('slDivision','slDepartment','slPosition','txtBirthday','txtPrefix','txtName','txtLastName','txtCardNumber','rTypeCard','txtAddress','txtTel','txtEmail','hotel_id','slRights','txtEmployeeProfile','password');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
 		$code 	  = ($aData["txtEmployee_id"] == "0") ? $this->create_employee_code( $aData["slDivision"], $aData["slDepartment"], $aData["slPosition"] ) : $aData["txtEmployee_code"] ;
 		$fodel 	  = "assets/upload/employee_profile/";
 		$aFN 	  = explode(".", $aData["txtEmployeeProfile"]);

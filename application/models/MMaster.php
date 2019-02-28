@@ -254,5 +254,18 @@ class MMaster extends CI_Model {
 	}
 
 	  
-	
+	public function search_country( $aData ){
+		$lang   = (isset($aData["lang"])? $aData["lang"] : "en");
+		$lang   = ($lang == "th")? "th" : "en";
+		$sql 	= " SELECT * FROM m_country ORDER BY country_name_$lang ASC";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+		}
+
+		// debug($arr);
+		return $arr;
+	}
 }

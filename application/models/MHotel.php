@@ -53,6 +53,12 @@ class MHotel extends CI_Model {
 
 	public function save_data( $aData ){
 		$aReturn  = array();
+		$arrParam = array('slQuarter','slProvince','txtHotel_id','txtHotel_code','slAmphur','slDistrict','txtPostcode','txtNumberTax','txtContactOther','txtAddress','txtTel','txtEmail','txtFullNameOwner','txtNameTH','txtNameEN','txtHotelProfile');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
 		$code 	  = ($aData["txtHotel_id"] == "0") ? $this->create_hotel_code() : $aData["txtHotel_code"] ;
 		$fodel 	  = "assets/upload/hotel_profile/";
 		$aFN 	  = explode(".", $aData["txtHotelProfile"]);

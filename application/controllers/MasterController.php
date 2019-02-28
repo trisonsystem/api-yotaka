@@ -7,7 +7,6 @@ class MasterController extends CI_Controller {
         parent::__construct();
 
         $this->des_key  = $this->config->config['des_key'];
-        $this->load->model('MEmployee');
        
 
     }
@@ -29,5 +28,13 @@ class MasterController extends CI_Controller {
     	$aData = $this->Decode_TripleDES( $_POST );
         $data  = $this->MMaster->search_hotel_all( $aData );
         print_r( json_encode($data) );
+    }
+
+    public function search_country(){
+        $this->load->model('MMaster');
+        $aData = $this->Decode_TripleDES( $_POST );
+        $data  = $this->MMaster->search_country( $aData );
+        print_r( json_encode($data) );
+
     }
 }
