@@ -2,7 +2,7 @@
 header('Access-Control-Allow-Origin: *');
 // header('Access-Control-Allow-Origin: *');
 
-class RoomtypeController extends CI_Controller
+class EmployeestatusController extends CI_Controller
 {
 	public $strUrl = "";
     public function __construct()
@@ -10,7 +10,7 @@ class RoomtypeController extends CI_Controller
         parent::__construct();
 
         $this->des_key  = $this->config->config['des_key'];
-        $this->load->model('MRoomtype');
+        $this->load->model('MEmployeestatus');
     }
 
     public function Decode_TripleDES( $aData ){
@@ -26,21 +26,21 @@ class RoomtypeController extends CI_Controller
         return $dataReceive;
     }
 
-    public function search_roomtype( $aData = "" ){
-		$aData  = $this->Decode_TripleDES( $_POST );
-        $res     = $this->MRoomtype->search_roomtype( $aData );
+    public function search_employeestatus( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MEmployeestatus->search_employeestatus( $aData );
         print_r( json_encode($res) );
     }
 
     public function save_data(){
         $aData = $this->Decode_TripleDES( $_POST );
-        $res   = $this->MRoomtype->save_data( $aData );
-        print_r( json_encode($res) );   
+        $res   = $this->MEmployeestatus->save_data( $aData );
+        print_r( json_encode($res) );
     }
 
     public function chang_status(){
         $aData = $this->Decode_TripleDES( $_POST );        
-        $res   = $this->MRoomtype->chang_status( $aData );
+        $res   = $this->MEmployeestatus->chang_status( $aData );
         print_r( json_encode($res) );
     }
 }

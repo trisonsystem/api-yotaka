@@ -1,30 +1,30 @@
 <?php
-class MRoomtype extends CI_Model
+class MEmployeestatus extends CI_Model
 {
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function search_roomtype( $aData ){
+    public function search_employeestatus( $aData ){
     	$lm = 15;
         if ( !isset($aData["page"]) ) 		 	   	{ $aData["page"] 				= 1;}
-        if ( !isset($aData["roomtype_id"]) )        { $aData["roomtype_id"]     = "";}
-        if ( !isset($aData["roomtype_name"]) ) 	    { $aData["roomtype_name"] 	= "";}
-        if ( !isset($aData["roomtype_status"]) ) 	    { $aData["roomtype_status"] 	= "";}
+        if ( !isset($aData["employeestatus_id"]) )        { $aData["employeestatus_id"]     = "";}
+        if ( !isset($aData["employeestatus_name"]) ) 	    { $aData["employeestatus_name"] 	= "";}
+        if ( !isset($aData["employeestatus_status"]) ) 	    { $aData["employeestatus_status"] 	= "";}
 
         $LIMIT 	 = ( $aData["page"] 	== "" ) ? "0, $lm" : (($aData["page"] * $lm) - $lm).",$lm" ;
 
         $WHERE   = "";
-        $WHERE  .= ( $aData["roomtype_id"]      == "" ) ? "" : " AND RT.id='".$aData["roomtype_id"]."'";
-        $WHERE  .= ( $aData["roomtype_name"] 		== "" ) ? "" : " AND RT.name LIKE '%".$aData["roomtype_name"]."%'";
-        $WHERE  .= ( $aData["roomtype_status"]      == "" ) ? "" : " AND RT.status='".$aData["roomtype_status"]."'";
-        $WHERE  .= " AND RT.hotel_id='".$aData["hotel_id"]."'";
+        $WHERE  .= ( $aData["employeestatus_id"]      == "" ) ? "" : " AND SE.id='".$aData["employeestatus_id"]."'";
+        $WHERE  .= ( $aData["employeestatus_name"] 		== "" ) ? "" : " AND SE.name LIKE '%".$aData["employeestatus_name"]."%'";
+        $WHERE  .= ( $aData["employeestatus_status"]      == "" ) ? "" : " AND SE.status='".$aData["employeestatus_status"]."'";
+        // $WHERE  .= " AND SE.hotel_id='".$aData["hotel_id"]."'";
 
         $sql = "SELECT *
-				FROM m_room_type AS RT
+				FROM m_status_employee AS SE
                 WHERE 1 = 1 $WHERE
-                ORDER BY RT.id DESC LIMIT $LIMIT";
+                ORDER BY SE.id DESC LIMIT $LIMIT";
 
         $query 	= $this->db->query($sql);
         $arr = array();
@@ -40,17 +40,17 @@ class MRoomtype extends CI_Model
     	$aReturn = array();
         $aSave   = array();
         // debug($aData);
-        $aSave["name"]  = $aData["etxtRoomTypeName"];
+        $aSave["name"]  = $aData["etxtEmployeeStatusName"];
         
-        if ($aData['txtRoomType_id'] == "0") {
+        if ($aData['txtEmployeeStatus_id'] == "0") {
             $aSave["status"]    = "1";
-            $aSave["hotel_id"]      = $aData["hotel_id"];
+            // $aSave["hotel_id"]      = $aData["hotel_id"];
             $aSave["create_date"]   = date("Y-m-d H:i:s");
             $aSave["create_by"]     = $aData["user"];
             $aSave["update_date"]   = date("Y-m-d H:i:s");
             $aSave["update_by"]     = $aData["user"];
 
-            if ($this->db->replace('m_room_type', $aSave)) {
+            if ($this->db->replace('m_status_employee', $aSave)) {
                 $aReturn["flag"] = true;
                 $aReturn["msg"] = "success";
             }else{
@@ -58,11 +58,11 @@ class MRoomtype extends CI_Model
                 $aReturn["msg"] = "Error SQL !!!";
             }
         } else {
-            $aSave["status"]                = $aData["txtRoomType_status"];
+            $aSave["status"]                = $aData["txtEmployeeStatus_status"];
             $aSave["update_date"]           = date("Y-m-d H:i:s");
             $aSave["update_by"]             = $aData["user"];
-            $this->db->where("id", $aData["txtRoomType_id"] );
-            if ($this->db->update('m_room_type', $aSave)) {
+            $this->db->where("id", $aData["txtEmployeeStatus_id"] );
+            if ($this->db->update('m_status_employee', $aSave)) {
                 $aReturn["flag"] = true;
                 $aReturn["msg"] = "success";
             }else{
@@ -79,8 +79,8 @@ class MRoomtype extends CI_Model
         $aSave["update_date"]           = date("Y-m-d H:i:s");
         $aSave["update_by"]             = $aData["user"];
         $aSave["status"]    = $aData["status"];
-        $this->db->where("id", $aData["roomtype_id"] );
-        if ($this->db->update('m_room_type', $aSave)) {
+        $this->db->where("id", $aData["employeestatus_id"] );
+        if ($this->db->update('m_status_employee', $aSave)) {
             $aReturn["flag"] = true;
             $aReturn["msg"] = "success";
         }else{
