@@ -10,7 +10,7 @@ class HotelstatusController extends CI_Controller
         parent::__construct();
 
         $this->des_key  = $this->config->config['des_key'];
-        $this->load->model('MEmployeestatus');
+        $this->load->model('MHotelstatus');
     }
 
     public function Decode_TripleDES( $aData ){
@@ -24,5 +24,23 @@ class HotelstatusController extends CI_Controller
             return;
         }
         return $dataReceive;
+    }
+
+    public function search_hotelstatus( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MHotelstatus->search_hotelstatus( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function save_data(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MHotelstatus->save_data( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function chang_status(){
+        $aData = $this->Decode_TripleDES( $_POST );        
+        $res   = $this->MHotelstatus->chang_status( $aData );
+        print_r( json_encode($res) );
     }
 }
