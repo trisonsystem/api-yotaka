@@ -41,15 +41,16 @@ class MRoomtype extends CI_Model
         $aSave   = array();
         // debug($aData);
         $aSave["name"]  = $aData["etxtRoomTypeName"];
-        $aSave["status"]    = "1";
+        
         if ($aData['txtRoomType_id'] == "0") {
+            $aSave["status"]    = "1";
             $aSave["hotel_id"]      = $aData["hotel_id"];
             $aSave["create_date"]   = date("Y-m-d H:i:s");
             $aSave["create_by"]     = $aData["user"];
             $aSave["update_date"]   = date("Y-m-d H:i:s");
             $aSave["update_by"]     = $aData["user"];
 
-            if ($this->db->replace('m_position', $aSave)) {
+            if ($this->db->replace('m_room_type', $aSave)) {
                 $aReturn["flag"] = true;
                 $aReturn["msg"] = "success";
             }else{
@@ -57,11 +58,11 @@ class MRoomtype extends CI_Model
                 $aReturn["msg"] = "Error SQL !!!";
             }
         } else {
-            
+            $aSave["status"]                = $aData["txtRoomType_status"];
             $aSave["update_date"]           = date("Y-m-d H:i:s");
             $aSave["update_by"]             = $aData["user"];
             $this->db->where("id", $aData["txtRoomType_id"] );
-            if ($this->db->update('m_position', $aSave)) {
+            if ($this->db->update('m_room_type', $aSave)) {
                 $aReturn["flag"] = true;
                 $aReturn["msg"] = "success";
             }else{
@@ -72,5 +73,21 @@ class MRoomtype extends CI_Model
 
         return $aReturn;
 
+    }
+
+    public function chang_status( $aData ){
+        $aSave["update_date"]           = date("Y-m-d H:i:s");
+        $aSave["update_by"]             = $aData["user"];
+        $aSave["status"]    = $aData["status"];
+        $this->db->where("id", $aData["roomtype_id"] );
+        if ($this->db->update('m_room_type', $aSave)) {
+            $aReturn["flag"] = true;
+            $aReturn["msg"] = "success";
+        }else{
+            $aReturn["flag"] = false;
+            $aReturn["msg"] = "Error SQL !!!";
+        }
+
+        return $aReturn;
     }
 }
