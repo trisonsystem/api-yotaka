@@ -25,4 +25,22 @@ class EmployeestatusController extends CI_Controller
         }
         return $dataReceive;
     }
+
+    public function search_employeestatus( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MEmployeestatus->search_employeestatus( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function save_data(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MEmployeestatus->save_data( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function chang_status(){
+        $aData = $this->Decode_TripleDES( $_POST );        
+        $res   = $this->MEmployeestatus->chang_status( $aData );
+        print_r( json_encode($res) );
+    }
 }
