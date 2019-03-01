@@ -70,8 +70,6 @@ $route['master/(:any)']  			= 'MasterController/$1';
 $route['division/(:any)']  			= 'Division/DivisionController/$1';
 $route['department/(:any)']  		= 'Department/DepartmentController/$1';
 $route['position/(:any)']  			= 'Position/PositionController/$1';
-
-
 $route['employee/(:any)']  			= 'Employee/EmployeeController/$1';
 $route['employeestatus/(:any)']  	= 'Employee/EmployeestatusController/$1';
 $route['hotel/(:any)']  			= 'Hotel/HotelController/$1';
@@ -81,6 +79,7 @@ $route['login/(:any)']  			= 'LoginController/$1';
 $route['room/(:any)']  				= 'Room/RoomController/$1';
 $route['roomtype/(:any)']  			= 'Room/RoomtypeController/$1';
 $route['customer/(:any)']  			= 'Customer/CustomerController/$1';
+$route['promotion/(:any)']  		= 'Promotion/PromotionController/$1';
 
 $route['404_override'] = '';
 $route[] = FALSE;
