@@ -59,6 +59,7 @@ class MHotel extends CI_Model {
                 return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
                 exit();
             }
+        }
 		$code 	  = ($aData["txtHotel_id"] == "0") ? $this->create_hotel_code() : $aData["txtHotel_code"] ;
 		$fodel 	  = "assets/upload/hotel_profile/";
 		$aFN 	  = explode(".", $aData["txtHotelProfile"]);
