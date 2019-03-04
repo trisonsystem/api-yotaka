@@ -95,7 +95,7 @@ class MLanguage extends CI_Model
         $WHERE   = "";
         $WHERE  .= ( $aData["language_word"]        == "" ) ? "" : " AND LG.word LIKE '%".$aData["language_word"]."%'";
         $WHERE  .= ( $aData["language_en"]        == "" ) ? "" : " AND LG.en LIKE '%".$aData["language_en"]."%'";
-        $WHERE  .= ( $aData["language_th"]        == "" ) ? "" : " AND LG.th='".$aData["language_th"]."'";
+        $WHERE  .= ( $aData["language_th"]        == "" ) ? "" : " AND LG.th LIKE '%".$aData["language_th"]."%'";
 
         $sql = "SELECT *
                 FROM language AS LG
