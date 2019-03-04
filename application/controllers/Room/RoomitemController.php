@@ -2,7 +2,7 @@
 header('Access-Control-Allow-Origin: *');
 // header('Access-Control-Allow-Origin: *');
 
-class PromotionController extends CI_Controller
+class RoomitemController extends CI_Controller
 {
 	public $strUrl = "";
     public function __construct()
@@ -10,7 +10,7 @@ class PromotionController extends CI_Controller
         parent::__construct();
 
         $this->des_key  = $this->config->config['des_key'];
-        $this->load->model('MPromotion');
+        $this->load->model('MRoomitem');
     }
 
     public function Decode_TripleDES( $aData ){
@@ -26,21 +26,9 @@ class PromotionController extends CI_Controller
         return $dataReceive;
     }
 
-    public function search_promotion( $aData = "" ){
-        $aData  = $this->Decode_TripleDES( $_POST );
-        $res     = $this->MPromotion->search_promotion( $aData );
-        print_r( json_encode($res) );
-    }
-
-    public function save_data(){
-        $aData = $this->Decode_TripleDES( $_POST );
-        $res   = $this->MPromotion->save_data( $aData );
-        print_r( json_encode($res) );
-    }
-
-    public function chang_status(){
-        $aData = $this->Decode_TripleDES( $_POST );        
-        $res   = $this->MPromotion->chang_status( $aData );
+    public function search_roomitem( $aData = "" ){
+		$aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MRoomitem->search_roomitem( $aData );
         print_r( json_encode($res) );
     }
 }

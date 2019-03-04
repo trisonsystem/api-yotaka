@@ -37,4 +37,64 @@ class MPromotion extends CI_Model
 		// debug($arr);
 		return $arr;
     }
+
+    public function save_data( $aData ){
+    	$aReturn = array();
+        $aSave   = array();
+        // debug($aData);
+        $aSave["title"]  = $aData["etxtPromotionTitle"];
+        $aSave["promotion_code"]  = $aData["etxtPromotionCode"];
+        $aSave["description"]  = $aData["etxtPromotionDescription"];
+        $aSave["startdate"]  = $aData["from_date"];
+        $aSave["enddate"]  = $aData["to_date"];
+        $aSave["discount"]  = $aData["etxtPromotionPrice"];
+        
+        if ($aData['txtPromotion_id'] == "0") {
+            $aSave["status"]    = "1";
+            $aSave["hotel_id"]      = $aData["hotel_id"];
+            $aSave["create_date"]   = date("Y-m-d H:i:s");
+            $aSave["create_by"]     = $aData["user"];
+            $aSave["update_date"]   = date("Y-m-d H:i:s");
+            $aSave["update_by"]     = $aData["user"];
+
+            if ($this->db->replace('promotion', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        } else {
+            $aSave["status"]    = $aData["txtPromotion_status"];
+            $aSave["update_date"]           = date("Y-m-d H:i:s");
+            $aSave["update_by"]             = $aData["user"];
+            $this->db->where("id", $aData["txtPromotion_id"] );
+            if ($this->db->update('promotion', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        }
+
+        return $aReturn;
+
+    }
+
+    public function chang_status( $aData ){
+    	$aSave["update_date"]           = date("Y-m-d H:i:s");
+        $aSave["update_by"]             = $aData["user"];
+        $aSave["status"]    = $aData["status"];
+        $this->db->where("id", $aData["promotion_id"] );
+        if ($this->db->update('promotion', $aSave)) {
+            $aReturn["flag"] = true;
+            $aReturn["msg"] = "success";
+        }else{
+            $aReturn["flag"] = false;
+            $aReturn["msg"] = "Error SQL !!!";
+        }
+
+        return $aReturn;
+    }
 }
