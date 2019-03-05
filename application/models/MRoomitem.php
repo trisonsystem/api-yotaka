@@ -11,6 +11,7 @@ class MRoomitem extends CI_Model
         if ( !isset($aData["page"]) ) 		 	   	{ $aData["page"] 				= 1;}
         if ( !isset($aData["roomitem_id"]) )        { $aData["roomitem_id"]     = "";}
         if ( !isset($aData["roomitem_name"]) ) 	    { $aData["roomitem_name"] 	= "";}
+        if ( !isset($aData["roomitem_status"]) )    { $aData["roomitem_status"]     = "";}
         if ( !isset($aData["room_code"]) ) 	    { $aData["room_code"] 	= "";}
         if ( !isset($aData["room_name"]) )    { $aData["room_name"]     = "";}
 
@@ -19,6 +20,7 @@ class MRoomitem extends CI_Model
         $WHERE   = "";
         $WHERE  .= ( $aData["roomitem_id"]      == "" ) ? "" : " AND RI.id='".$aData["roomitem_id"]."'";
         $WHERE  .= ( $aData["roomitem_name"] 		== "" ) ? "" : " AND RI.name LIKE '%".$aData["roomitem_name"]."%'";
+        $WHERE  .= ( $aData["roomitem_status"]        == "" ) ? "" : " AND RI.status='".$aData["roomitem_status"]."'";
         $WHERE  .= ( $aData["room_code"] 		== "" ) ? "" : " AND RM.code LIKE '%".$aData["room_code"]."%'";
         $WHERE  .= ( $aData["room_name"]        == "" ) ? "" : " AND RM.name LIKE '%".$aData["room_name"]."%'";
         $WHERE  .= " AND RI.hotel_id='".$aData["hotel_id"]."'";
