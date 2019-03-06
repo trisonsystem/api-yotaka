@@ -12,8 +12,6 @@ class MRoomitem extends CI_Model
         if ( !isset($aData["roomitem_id"]) )        { $aData["roomitem_id"]     = "";}
         if ( !isset($aData["roomitem_name"]) ) 	    { $aData["roomitem_name"] 	= "";}
         if ( !isset($aData["roomitem_status"]) )    { $aData["roomitem_status"]     = "";}
-        // if ( !isset($aData["room_code"]) ) 	    { $aData["room_code"] 	= "";}
-        // if ( !isset($aData["room_name"]) )    { $aData["room_name"]     = "";}
 
         $LIMIT 	 = ( $aData["page"] 	== "" ) ? "0, $lm" : (($aData["page"] * $lm) - $lm).",$lm" ;
 
@@ -21,8 +19,6 @@ class MRoomitem extends CI_Model
         $WHERE  .= ( $aData["roomitem_id"]      == "" ) ? "" : " AND RI.id='".$aData["roomitem_id"]."'";
         $WHERE  .= ( $aData["roomitem_name"] 		== "" ) ? "" : " AND RI.name LIKE '%".$aData["roomitem_name"]."%'";
         $WHERE  .= ( $aData["roomitem_status"]        == "" ) ? "" : " AND RI.status='".$aData["roomitem_status"]."'";
-        // $WHERE  .= ( $aData["room_code"] 		== "" ) ? "" : " AND RM.code LIKE '%".$aData["room_code"]."%'";
-        // $WHERE  .= ( $aData["room_name"]        == "" ) ? "" : " AND RM.name LIKE '%".$aData["room_name"]."%'";
         $WHERE  .= " AND RI.hotel_id='".$aData["hotel_id"]."'";
 
         $sql = "SELECT RI.*
@@ -43,8 +39,15 @@ class MRoomitem extends CI_Model
 
     public function save_data( $aData ){
     	$aReturn = array();
+        $arrParam = array('txtRoomItem_id', 'etxtRoomItemName', 'txtRoomItem_status');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
         $aSave   = array();
-        // debug($aData);
         $aSave["name"]  = $aData["etxtRoomItemName"];
         
         if ($aData['txtRoomItem_id'] == "0") {

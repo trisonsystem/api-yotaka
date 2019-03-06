@@ -114,9 +114,15 @@ class MLanguage extends CI_Model
 
     public function save_data( $aData ){
         $aReturn = array();
+        $arrParam = array('txtLanguage_word', 'etxtLanguageEN', 'etxtLanguageTH');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
         $aSave   = array();
-        // debug($aData);
-        
         $aSave["en"]  = $aData["etxtLanguageEN"];
         $aSave["th"]  = $aData["etxtLanguageTH"];
         if ($aData['txtLanguage_word'] == "0") {
