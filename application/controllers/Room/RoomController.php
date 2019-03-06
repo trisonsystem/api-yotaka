@@ -60,4 +60,9 @@ class RoomController extends CI_Controller {
         print_r( json_encode($res) );
     }
 
+    public function search_room_forbook(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MRoom->search_room_forbook( $aData );
+        print_r( json_encode($res) );
+    }
 }

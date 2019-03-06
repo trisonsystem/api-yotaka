@@ -195,4 +195,36 @@ class MRoom extends CI_Model {
 	}
 
 
+	public function search_room_forbook( $aData ){
+		if ( !isset($aData["page"]) ) 		 	{ $aData["page"] 				= 1;}
+		if ( !isset($aData["room_id"]) ) 		{ $aData["room_id"] 			= "";}
+		if ( !isset($aData["room_code"]) ) 		{ $aData["room_code"] 			= "";}
+		if ( !isset($aData["room_name"]) ) 		{ $aData["room_name"] 			= "";}
+		if ( !isset($aData["status"]) ) 		{ $aData["status"] 				= "";}
+		if ( !isset($aData["room_type_id"]) ) 	{ $aData["room_type_id"] 		= "";}
+		if ( !isset($aData["amphur_id"]) ) 		{ $aData["amphur_id"] 			= "";}
+
+		$WHERE   = "";
+		$WHERE  .= ( $aData["room_id"] 			== "" ) ? "" : " AND R.id='".$aData["room_id"]."'";
+		$WHERE  .= ( $aData["room_code"] 		== "" ) ? "" : " AND R.code LIKE '%".$aData["room_code"]."%'";
+		$WHERE  .= ( $aData["room_name"] 		== "" ) ? "" : " AND R.name LIKE '%".$aData["room_name"]."%'";
+		$WHERE  .= ( $aData["status"] 			== "" ) ? "" : " AND R.status='".$aData["status"]."'";
+		$WHERE  .= ( $aData["room_type_id"] 	== "" ) ? "" : " AND R.m_type_room_id='".$aData["room_type_id"]."'";
+		$WHERE  .= " AND R.hotel_id='".$aData["hotel_id"]."'";
+
+		$sql 	= " SELECT  R.* , TR.name AS type_room_name
+					FROM m_room AS R 
+					LEFT JOIN m_room_type AS TR ON R.m_type_room_id = TR.id
+					LEFT JOIN m_room_type AS TR ON R.m_type_room_id = TR.id
+					WHERE 1 = 1  $WHERE ORDER BY R.id ASC";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+		}
+
+		// debug($arr);
+		return $arr;
+	}
 }
