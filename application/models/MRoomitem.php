@@ -12,8 +12,8 @@ class MRoomitem extends CI_Model
         if ( !isset($aData["roomitem_id"]) )        { $aData["roomitem_id"]     = "";}
         if ( !isset($aData["roomitem_name"]) ) 	    { $aData["roomitem_name"] 	= "";}
         if ( !isset($aData["roomitem_status"]) )    { $aData["roomitem_status"]     = "";}
-        if ( !isset($aData["room_code"]) ) 	    { $aData["room_code"] 	= "";}
-        if ( !isset($aData["room_name"]) )    { $aData["room_name"]     = "";}
+        // if ( !isset($aData["room_code"]) ) 	    { $aData["room_code"] 	= "";}
+        // if ( !isset($aData["room_name"]) )    { $aData["room_name"]     = "";}
 
         $LIMIT 	 = ( $aData["page"] 	== "" ) ? "0, $lm" : (($aData["page"] * $lm) - $lm).",$lm" ;
 
@@ -21,13 +21,13 @@ class MRoomitem extends CI_Model
         $WHERE  .= ( $aData["roomitem_id"]      == "" ) ? "" : " AND RI.id='".$aData["roomitem_id"]."'";
         $WHERE  .= ( $aData["roomitem_name"] 		== "" ) ? "" : " AND RI.name LIKE '%".$aData["roomitem_name"]."%'";
         $WHERE  .= ( $aData["roomitem_status"]        == "" ) ? "" : " AND RI.status='".$aData["roomitem_status"]."'";
-        $WHERE  .= ( $aData["room_code"] 		== "" ) ? "" : " AND RM.code LIKE '%".$aData["room_code"]."%'";
-        $WHERE  .= ( $aData["room_name"]        == "" ) ? "" : " AND RM.name LIKE '%".$aData["room_name"]."%'";
+        // $WHERE  .= ( $aData["room_code"] 		== "" ) ? "" : " AND RM.code LIKE '%".$aData["room_code"]."%'";
+        // $WHERE  .= ( $aData["room_name"]        == "" ) ? "" : " AND RM.name LIKE '%".$aData["room_name"]."%'";
         $WHERE  .= " AND RI.hotel_id='".$aData["hotel_id"]."'";
 
-        $sql = "SELECT RI.*, RM.code AS  room_code, RM.name AS room_name
+        $sql = "SELECT RI.*
 				FROM m_room_item AS RI
-				LEFT JOIN m_room AS RM ON RI.m_room_id = RM.id
+				
                 WHERE 1 = 1 $WHERE
                 ORDER BY RI.id DESC LIMIT $LIMIT";
 
@@ -39,5 +39,60 @@ class MRoomitem extends CI_Model
 		$arr["limit"] = $lm;
 		// debug($arr);
 		return $arr;
+    }
+
+    public function save_data( $aData ){
+    	$aReturn = array();
+        $aSave   = array();
+        // debug($aData);
+        $aSave["name"]  = $aData["etxtRoomItemName"];
+        
+        if ($aData['txtRoomItem_id'] == "0") {
+            $aSave["status"]    = "1";
+            $aSave["hotel_id"]      = $aData["hotel_id"];
+            $aSave["create_date"]   = date("Y-m-d H:i:s");
+            $aSave["create_by"]     = $aData["user"];
+            $aSave["update_date"]   = date("Y-m-d H:i:s");
+            $aSave["update_by"]     = $aData["user"];
+
+            if ($this->db->replace('m_room_item', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        } else {
+            $aSave["status"]    = $aData["txtRoomItem_status"];
+            $aSave["update_date"]           = date("Y-m-d H:i:s");
+            $aSave["update_by"]             = $aData["user"];
+            $this->db->where("id", $aData["txtRoomItem_id"] );
+            if ($this->db->update('m_room_item', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        }
+
+        return $aReturn;
+
+    }
+
+    public function chang_status( $aData ){
+    	$aSave["update_date"]           = date("Y-m-d H:i:s");
+        $aSave["update_by"]             = $aData["user"];
+        $aSave["status"]    = $aData["status"];
+        $this->db->where("id", $aData["roomitem_id"] );
+        if ($this->db->update('m_room_item', $aSave)) {
+            $aReturn["flag"] = true;
+            $aReturn["msg"] = "success";
+        }else{
+            $aReturn["flag"] = false;
+            $aReturn["msg"] = "Error SQL !!!";
+        }
+
+        return $aReturn;
     }
 }
