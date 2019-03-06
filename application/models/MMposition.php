@@ -65,8 +65,15 @@ class MMposition extends CI_Model
 
     public function save_data( $aData ){
     	$aReturn = array();
+        $arrParam = array('eslPositionDivision', 'eslPositionDepartment', 'etxtPositionCode', 'etxtPositionName', 'txtPosition_id', 'txtPosition_status', 'hotel_id');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
         $aSave   = array();
-        // debug($aData);
         $aSave["code"]  = $aData["etxtPositionCode"];
         $aSave["name"]  = $aData["etxtPositionName"];
         $aSave["m_division_id"]  = $aData["eslPositionDivision"];

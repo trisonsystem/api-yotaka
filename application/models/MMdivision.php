@@ -41,8 +41,15 @@ class MMdivision extends CI_Model
 
     public function save_data( $aData ){
         $aReturn = array();
+        $arrParam = array('txtDivisionCode', 'txtDivisionName', 'txtDivision_status', 'hotel_id');
+        foreach ($$arrParam as $key) {
+            if (!isset($arrParam)) {
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
         $aSave 	 = array();
-        // debug($aData,true);
         $aSave["code"] 	= $aData["txtDivisionCode"];
 		$aSave["name"] 	= $aData["txtDivisionName"];
        

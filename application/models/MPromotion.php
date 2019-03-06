@@ -40,8 +40,15 @@ class MPromotion extends CI_Model
 
     public function save_data( $aData ){
     	$aReturn = array();
+        $arrParam = array('txtPromotion_id', 'etxtPromotionTitle', 'etxtPromotionCode', 'etxtPromotionDescription', 'from_date', 'to_date', 'etxtPromotionPrice', 'txtPromotion_status', 'hotel_id');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
         $aSave   = array();
-        // debug($aData);
         $aSave["title"]  = $aData["etxtPromotionTitle"];
         $aSave["promotion_code"]  = $aData["etxtPromotionCode"];
         $aSave["description"]  = $aData["etxtPromotionDescription"];

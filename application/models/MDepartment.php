@@ -63,8 +63,15 @@ class MDepartment extends CI_Model
 
     public function save_data( $aData ){
         $aReturn = array();
+        $arrParam = array('sleName_Division', 'textDepartmentCode', 'textDepartmentName', 'txtDepartment_id', 'txtDepartment_status', 'hotel_id');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
         $aSave   = array();
-        // debug($aData);
         $aSave["code"]  = $aData["textDepartmentCode"];
         $aSave["name"]  = $aData["textDepartmentName"];
         $aSave["m_division_id"]  = $aData["sleName_Division"];

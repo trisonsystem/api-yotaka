@@ -38,8 +38,15 @@ class MHotelstatus extends CI_Model
 
     public function save_data( $aData ){
     	$aReturn = array();
+        $arrParam = array('txtHotelStatus_id', 'etxtHotelStatusName', 'txtHotelStatus_status');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
         $aSave   = array();
-        // debug($aData);
         $aSave["name"]  = $aData["etxtHotelStatusName"];
         
         if ($aData['txtHotelStatus_id'] == "0") {

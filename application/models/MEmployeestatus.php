@@ -38,8 +38,9 @@ class MEmployeestatus extends CI_Model
 
     public function save_data( $aData ){
     	$aReturn = array();
+        $arraParam = array('txtEmployeeStatus_id', 'etxtEmployeeStatusName', 'txtEmployeeStatus_status');
+
         $aSave   = array();
-        // debug($aData);
         $aSave["name"]  = $aData["etxtEmployeeStatusName"];
         
         if ($aData['txtEmployeeStatus_id'] == "0") {
