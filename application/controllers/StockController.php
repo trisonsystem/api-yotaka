@@ -45,14 +45,10 @@ class StockController extends CI_Controller {
         echo json_encode($dataReturn);
     }
 
-    public function testapi(){
-        
-        $p_data = $this->input->post('data');
+    public function saveStock(){
 
-        // debug($p_data,true);
-
-        $p_data             = base64_decode($p_data);
-        $dataReceive        = TripleDES::decryptText($p_data,'KsAsFUHSyl9bH3qUTxxHg1mZGRgwQpQ4');
+        $p_data             = $this->input->post('data');
+        $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
         $dataReceive        = json_decode($dataReceive,true);
 
         if($dataReceive == ''){
@@ -61,29 +57,83 @@ class StockController extends CI_Controller {
             return;
         }
 
-        // $dataReceive['ipRemote'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP']))? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
-        debug($dataReceive);
-
         ## check param
-        // $arrParam = array('username','status','page','agent','date','web');
-        // foreach ($arrParam as $key) {
-        //     if(!isset($dataReceive[$key])){
-        //         $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
-        //         echo json_encode($arrRetrun);
-        //         return;
-        //     }
-        // }
+        $arrParam = array('stockid','productbranch','productid','productname','productprice','productsell','productamount');
+        foreach ($arrParam as $key) {
+            if(!isset($dataReceive[$key])){
+                $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
+                echo json_encode($arrRetrun);
+                return;
+            }
+        }
         ## --
 
-        $this->load->model('MMaster');
+        $this->load->model('MStock');
 
-        $com = $this->MMaster->autocProduct();
-        
-        // echo json_encode($com);
+        $com = $this->MStock->saveStock($dataReceive);
+        echo json_encode($com);
+    }
 
-        debug($com);
+    public function readEditStock(){
+
+        $p_data             = $this->input->post('data');
+        $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
+        $dataReceive        = json_decode($dataReceive,true);
+
+        if($dataReceive == ''){
+            $arrRetrun = array( "sflag"=>false, "msg"=>"Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+
+        ## check param
+        $arrParam = array('id');
+        foreach ($arrParam as $key) {
+            if(!isset($dataReceive[$key])){
+                $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
+                echo json_encode($arrRetrun);
+                return;
+            }
+        }
+        ## --
+
+        $this->load->model('MStock');
+
+        $com = $this->MStock->readEditStock($dataReceive);
+        echo json_encode($com);
 
     }
+
+    public function delStock(){
+
+        $p_data             = $this->input->post('data');
+        $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
+        $dataReceive        = json_decode($dataReceive,true);
+
+        if($dataReceive == ''){
+            $arrRetrun = array( "sflag"=>false, "msg"=>"Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+
+        ## check param
+        $arrParam = array('id');
+        foreach ($arrParam as $key) {
+            if(!isset($dataReceive[$key])){
+                $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
+                echo json_encode($arrRetrun);
+                return;
+            }
+        }
+        ## --
+
+        $this->load->model('MStock');
+
+        $com = $this->MStock->delStock($dataReceive);
+        echo json_encode($com);
+
+    }
+
 
     protected function insLogs($action,$data){
         $fp = fopen('request.log', 'a');

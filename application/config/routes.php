@@ -64,6 +64,9 @@ $route['lang/(:any)']              = 'LanguageController/$1';
 
 {
 	$route['stock/read_stock']    	= 'StockController/readStock';
+	$route['stock/save_stock']    	= 'StockController/saveStock';
+	$route['stock/readedit_stock']	= 'StockController/readEditStock';
+	$route['stock/del_stock']		= 'StockController/delStock';
 }
 
 $route['master/(:any)']  			= 'MasterController/$1';
