@@ -40,7 +40,7 @@ class MPromotion extends CI_Model
 
     public function save_data( $aData ){
     	$aReturn = array();
-        $arrParam = array('txtPromotion_id', 'etxtPromotionTitle', 'etxtPromotionCode', 'etxtPromotionDescription', 'from_date', 'to_date', 'etxtPromotionPrice', 'txtPromotion_status', 'hotel_id');
+        $arrParam = array('txtPromotion_id', 'etxtPromotionTitle', 'etxtPromotionCode', 'etxtPromotionDescription', 'from_date', 'to_date', 'etxtPromotionPrice', 'txtPromotionImages', 'txtPromotion_status', 'hotel_id');
         foreach ($arrParam as $key) {
             if(!isset($aData[$key])){
                 return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
@@ -48,6 +48,14 @@ class MPromotion extends CI_Model
             }
         }
 
+        // $code = $aData["etxtPromotionCode"];
+        $code     = ($aData["txtPromotion_id"] == "0") ? $aData["etxtPromotionCode"] : "b" ;
+        // debug($code, true);
+        $fodel    = "assets/upload/promotion_images/";
+        $aFN      = explode(".", $aData["txtPromotionImages"]);
+        $n_name   = $aFN[count($aFN)-1];
+        $n_path   = $fodel.$code.".".$n_name;
+        
         $aSave   = array();
         $aSave["title"]  = $aData["etxtPromotionTitle"];
         $aSave["promotion_code"]  = $aData["etxtPromotionCode"];
@@ -55,6 +63,11 @@ class MPromotion extends CI_Model
         $aSave["startdate"]  = $aData["from_date"];
         $aSave["enddate"]  = $aData["to_date"];
         $aSave["discount"]  = $aData["etxtPromotionPrice"];
+
+
+        if ($aData["txtPromotionImages"] != "0") {
+            $aSave["promotion_img"]       = $n_path;
+        }
         
         if ($aData['txtPromotion_id'] == "0") {
             $aSave["status"]    = "1";
@@ -67,6 +80,7 @@ class MPromotion extends CI_Model
             if ($this->db->replace('promotion', $aSave)) {
                 $aReturn["flag"] = true;
                 $aReturn["msg"] = "success";
+                $aReturn["code"] = $code;
             }else{
                 $aReturn["flag"] = false;
                 $aReturn["msg"] = "Error SQL !!!";
@@ -79,6 +93,7 @@ class MPromotion extends CI_Model
             if ($this->db->update('promotion', $aSave)) {
                 $aReturn["flag"] = true;
                 $aReturn["msg"] = "success";
+                $aReturn["code"] = $code;
             }else{
                 $aReturn["flag"] = false;
                 $aReturn["msg"] = "Error SQL !!!";
