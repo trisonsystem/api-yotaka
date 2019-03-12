@@ -85,5 +85,8 @@ $route['roomitem/(:any)']  			= 'Room/RoomitemController/$1';
 $route['customer/(:any)']  			= 'Customer/CustomerController/$1';
 $route['promotion/(:any)']  		= 'Promotion/PromotionController/$1';
 
+
+$route['producttype/(:any)']  		= 'Product/ProducttypeController/$1';
+
 $route['404_override'] = '';
 $route[] = FALSE;
