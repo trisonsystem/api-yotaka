@@ -48,12 +48,22 @@ class MPromotion extends CI_Model
             }
         }
 
-        // $code = $aData["etxtPromotionCode"];
-        $code     = ($aData["txtPromotion_id"] == "0") ? $aData["etxtPromotionCode"] : "b" ;
-        // debug($code, true);
         $fodel    = "assets/upload/promotion_images/";
         $aFN      = explode(".", $aData["txtPromotionImages"]);
         $n_name   = $aFN[count($aFN)-1];
+
+        if ($aData["txtPromotion_id"] == "0") {
+            $code = $aData["etxtPromotionCode"];
+        }else{
+            $arrStr = explode("/", $aFN[0]);
+            
+            if ($aData["oldPromotionImages"] != $arrStr[3]) {
+                $code = $aData["etxtPromotionCode"]."(1)";
+            }else{
+                $code = $aData["oldPromotionImages"];
+            }
+        }
+
         $n_path   = $fodel.$code.".".$n_name;
         
         $aSave   = array();
