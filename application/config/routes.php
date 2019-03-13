@@ -64,6 +64,13 @@ $route['lang/(:any)']              = 'LanguageController/$1';
 
 {
 	$route['stock/read_stock']    	= 'StockController/readStock';
+	$route['stock/save_stock']    	= 'StockController/saveStock';
+	$route['stock/readedit_stock']	= 'StockController/readEditStock';
+	$route['stock/del_stock']		= 'StockController/delStock';
+}
+
+{
+	$route['producttype/read_producttype']  		= 'ProducttypeController/read_producttype';
 }
 
 $route['master/(:any)']  			= 'MasterController/$1';
@@ -82,6 +89,9 @@ $route['roomitem/(:any)']  			= 'Room/RoomitemController/$1';
 $route['customer/(:any)']  			= 'Customer/CustomerController/$1';
 $route['promotion/(:any)']  		= 'Promotion/PromotionController/$1';
 $route['book/(:any)']  				= 'Book/BookController/$1';
+
+
+// $route['producttype/(:any)']  		= 'Product/ProducttypeController/$1';
 
 $route['404_override'] = '';
 $route[] = FALSE;
