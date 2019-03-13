@@ -34,4 +34,66 @@ class MProducttype extends CI_Model
 		// debug($arr);
 		return $arr;
     }
+
+    public function save_data( $aData ){
+        $aReturn = array();
+        $arrParam = array('txtProducttype_id', 'txtProducttype_status', 'etxtProductTypeName');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
+        $aSave   = array();
+        $aSave["name"]  = $aData["etxtProductTypeName"];
+        
+        if ($aData['txtProducttype_id'] == "0") {
+            $aSave["status"]    = "1";
+            // $aSave["hotel_id"]      = $aData["hotel_id"];
+            $aSave["create_date"]   = date("Y-m-d H:i:s");
+            $aSave["create_by"]     = $aData["user"];
+            $aSave["update_date"]   = date("Y-m-d H:i:s");
+            $aSave["update_by"]     = $aData["user"];
+
+            if ($this->db->replace('m_product_type', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        } else {
+            $aSave["status"]    = $aData["txtProducttype_status"];
+            $aSave["update_date"]           = date("Y-m-d H:i:s");
+            $aSave["update_by"]             = $aData["user"];
+            $this->db->where("id", $aData["txtProducttype_id"] );
+            if ($this->db->update('m_product_type', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        }
+
+        return $aReturn;
+
+    }
+
+    public function chang_status( $aData ){
+        $aSave["update_date"]           = date("Y-m-d H:i:s");
+        $aSave["update_by"]             = $aData["user"];
+        $aSave["status"]    = $aData["status"];
+        $this->db->where("id", $aData["producttype_id"] );
+        if ($this->db->update('m_product_type', $aSave)) {
+            $aReturn["flag"] = true;
+            $aReturn["msg"] = "success";
+        }else{
+            $aReturn["flag"] = false;
+            $aReturn["msg"] = "Error SQL !!!";
+        }
+
+        return $aReturn;
+    }
 }
