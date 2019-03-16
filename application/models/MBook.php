@@ -49,13 +49,13 @@ class MBook extends CI_Model {
 
 	public function save_data( $aData ){
 		$aReturn = array();
-		// $arrParam = array('txtPrefix','txtName','txtLastName','txtCardNumber','rTypeCard','txtAddress','txtTel','txtEmail','hotel_id','txtBirthday','rUseSystem','slNationality','slEthnicity','txtCustomerProfile','txtCustomer_id');
-  //       foreach ($arrParam as $key) {
-  //           if(!isset($aData[$key])){
-  //               return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
-  //               exit();
-  //           }
-  //       }
+		$arrParam = array('hotel_id','user','GuestsQty','ChildenQty','CheckIn','CheckOut','CustomerID','Prefix','Name','LastName','Tel','Email','BookCustomerID','BookPrefix','BookName','BookLastName','BookTel','BookEmail','Sum_price','BookID','room');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
 
         $aSave 	 = array();
 		$aSave["hotel_id"] 			= $aData["hotel_id"];
@@ -76,6 +76,7 @@ class MBook extends CI_Model {
 		$aSave["email_guest"] 		= $aData["Email"];
 		$aSave["tel_guest"] 		= $aData["Tel"];
 		$aSave["summary"] 			= $aData["Sum_price"];
+		$aSave["room_qty	"] 		= $aData["RoomQty"];
 		if ($aData["ChildenQty"] > 0) {
 			$cd = "";
 			foreach ($aData["Childen"] as $key => $value) {
@@ -86,7 +87,7 @@ class MBook extends CI_Model {
 // debug($aSave,true);
 		$booking_id = $aData["BookID"];
 		if ($aData["BookID"] == "0") {
-			$aSave["status"] 				= 1;
+			$aSave["status"] 				= 'wait_payment';
 			$aSave["create_date"] 			= date("Y-m-d H:i:s");
 			$aSave["create_by"] 			= $aData["user"];
 			$aSave["update_date"] 			= date("Y-m-d H:i:s");
@@ -150,4 +151,69 @@ class MBook extends CI_Model {
 		return (strtotime($strDate2) - strtotime($strDate1))/  ( 60 * 60 * 24 );  // 1 day = 60*60*24
 	}
 
+	public function search_status_book( $aData ){
+		$arr   = array();
+		$arr[] = array('id'=>'wait_payment' ,'name' => 's_wait_payment');
+		$arr[] = array('id'=>'already_paid' ,'name' => 's_already_paid');
+		$arr[] = array('id'=>'check_in'  ,'name' => 's_check_in');
+		$arr[] = array('id'=>'check_out' ,'name' => 's_check_out');
+		$arr[] = array('id'=>'cancel'   ,'name' => 's_cancel');
+
+		return $arr;
+	}
+
+	public function search_book_list( $aData ){
+		$lm = 15;
+		if ( !isset($aData["page"]) ) 		 	{ $aData["page"] 				= 1;}
+		if ( !isset($aData["book_id"]) ) 		{ $aData["book_id"] 			= "";}
+		if ( !isset($aData["check_in"]) ) 		{ $aData["check_in"] 			= "";}
+		if ( !isset($aData["check_out"]) ) 		{ $aData["check_out"] 			= "";}
+		if ( !isset($aData["name_book"]) ) 		{ $aData["name_book"] 			= "";}
+		if ( !isset($aData["last_name_book"]) )	{ $aData["last_name_book"] 		= "";}
+		if ( !isset($aData["book_status"]) )	{ $aData["book_status"] 		= "";}
+		$aData["check_in"] 	= $this->convert_date_to_base( $aData["check_in"] );
+		$aData["check_out"] = $this->convert_date_to_base( $aData["check_out"] );
+		$LIMIT 	 = ( $aData["page"] 	== "" ) ? "0, $lm" : (($aData["page"] * $lm) - $lm).",$lm" ;
+
+		$WHERE   = "";
+		$WHERE  .= ( $aData["book_id"] 			== "" ) ? "" : " AND BK.id='".$aData["book_id"]."'";
+		$WHERE  .= ( $aData["check_in"] == "" && $aData["check_out"] == "" ) ? "" : " AND BKL.book_time BETWEEN '".$aData["check_in"]."' AND '".$aData["check_out"]."'";
+		$WHERE  .= ( $aData["name_book"]		== "" ) ? "" : " AND BK.name_book LIKE '%".$aData["name_book"]."%'";
+		$WHERE  .= ( $aData["last_name_book"] 	== "" ) ? "" : " AND BK.lastname_book='".$aData["last_name_book"]."'";
+		$WHERE  .= ( $aData["book_status"] 		== "" ) ? "" : " AND BK.status='".$aData["book_status"]."'";
+		$WHERE  .= " AND BK.hotel_id='".$aData["hotel_id"]."'";
+
+		$sql 	= "	SELECT BK.*
+					FROM booking AS BK
+					LEFT JOIN booking_room_list AS BKL ON BK.id = BKL.booking_id
+					WHERE 1 = 1 $WHERE
+					GROUP BY BK.id
+					ORDER BY BK.id DESC
+					LIMIT $LIMIT";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+		}
+		$arr["limit"] = $lm;
+		// debug($arr);
+		return $arr;
+	}
+
+	public function chang_status( $aData ){
+		$aSave["update_date"]   = date("Y-m-d H:i:s");
+        $aSave["update_by"]     = $aData["user"];
+        $aSave["status"]    	= $aData["status"];
+        $this->db->where("id", $aData["book_id"] );
+        if ($this->db->update('booking', $aSave)) {
+            $aReturn["flag"] = true;
+            $aReturn["msg"] = "success";
+        }else{
+            $aReturn["flag"] = false;
+            $aReturn["msg"] = "Error SQL !!!";
+        }
+
+        return $aReturn;
+	}
 }

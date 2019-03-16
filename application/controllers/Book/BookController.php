@@ -41,4 +41,24 @@ class BookController extends CI_Controller {
         $res   = $this->MBook->save_data( $aData );
         print_r( json_encode($res) );
     }
+
+    public function search_status_book(){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res    = $this->MBook->search_status_book( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function search_book_list(){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res    = $this->MBook->search_book_list( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function chang_status(){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res    = $this->MBook->chang_status( $aData );
+        print_r( json_encode($res) );
+    }
 }
+
+
