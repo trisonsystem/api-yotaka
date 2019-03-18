@@ -70,7 +70,8 @@ $route['lang/(:any)']              = 'LanguageController/$1';
 }
 
 {
-	$route['producttype/read_producttype']  		= 'ProducttypeController/read_producttype';
+	$route['producttype/read_producttype']  		= 'ProducttypeController/readProducttype';
+	$route['producttype/save_producttype']  		= 'ProducttypeController/saveProducttype';
 }
 
 $route['master/(:any)']  			= 'MasterController/$1';
