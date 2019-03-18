@@ -24,12 +24,12 @@ class MRoom extends CI_Model {
 		$WHERE  .= ( $aData["room_code"] 		== "" ) ? "" : " AND R.code LIKE '%".$aData["room_code"]."%'";
 		$WHERE  .= ( $aData["room_name"] 		== "" ) ? "" : " AND R.name LIKE '%".$aData["room_name"]."%'";
 		$WHERE  .= ( $aData["status"] 			== "" ) ? "" : " AND R.status='".$aData["status"]."'";
-		$WHERE  .= ( $aData["room_type_id"] 	== "" ) ? "" : " AND R.m_type_room_id='".$aData["room_type_id"]."'";
+		$WHERE  .= ( $aData["room_type_id"] 	== "" ) ? "" : " AND R.m_room_type_id='".$aData["room_type_id"]."'";
 		$WHERE  .= " AND R.hotel_id='".$aData["hotel_id"]."'";
 
 		$sql 	= " SELECT  R.* , TR.name AS type_room_name
 					FROM m_room AS R 
-					LEFT JOIN m_room_type AS TR ON R.m_type_room_id = TR.id
+					LEFT JOIN m_room_type AS TR ON R.m_room_type_id = TR.id
 					WHERE 1 = 1  $WHERE ORDER BY R.id ASC LIMIT $LIMIT";
 		$query 	= $this->db->query($sql);
 		
@@ -113,7 +113,7 @@ class MRoom extends CI_Model {
 		$aSave["code"] 				= $aData["txtCode"];
 		$aSave["name"] 				= $aData["txtName"];
 		$aSave["hotel_id"] 			= $aData["hotel_id"];
-		$aSave["m_type_room_id"] 	= $aData["slRoomType"];
+		$aSave["m_room_type_id"] 	= $aData["slRoomType"];
 		$aSave["price"] 			= $aData["txtPrice"];
 		$aSave["qty_people"] 		= $aData["txtQtyPeople"];
 		$aSave["remark"] 			= $aData["txtRemark"];

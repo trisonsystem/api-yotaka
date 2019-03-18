@@ -32,10 +32,10 @@ class MBook extends CI_Model {
 		$sql 	= " SELECT R.*, BKL.book_time,  TR.name AS type_room_name
 					FROM m_room AS R
 					LEFT JOIN booking_room_list AS BKL ON R.id = BKL.m_room_id
-					LEFT JOIN m_room_type AS TR ON R.m_type_room_id = TR.id
+					LEFT JOIN m_room_type AS TR ON R.m_room_type_id = TR.id
 					WHERE 1 = 1 AND R.status = 'open_status'  $WHERE
 					GROUP BY R.id
-					ORDER BY R.m_type_room_id ASC";
+					ORDER BY R.m_room_type_id ASC";
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();

@@ -1,13 +1,13 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 
-class BankController extends CI_Controller {
+class PaymentController extends CI_Controller {
     public $strUrl = "";
     public function __construct(){
         parent::__construct();
 
         $this->des_key  = $this->config->config['des_key'];
-        $this->load->model('MBank');
+        $this->load->model('MPayment');
 
     }
 
@@ -24,16 +24,27 @@ class BankController extends CI_Controller {
         return $dataReceive;
     }
 
-    public function search_bank(){
+    public function search_payment(){
         $aData = $this->Decode_TripleDES( $_POST );
-        $res   = $this->MBank->search_bank( $aData );
+        $res   = $this->MPayment->search_payment( $aData );
         print_r( json_encode($res) );
     }
 
-    public function search_bank_list(){
+    public function search_payment_status(){
         $aData = $this->Decode_TripleDES( $_POST );
-        $res   = $this->MBank->search_bank_list( $aData );
+        $res   = $this->MPayment->search_payment_status( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function search_payment_type(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MPayment->search_payment_type( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function chang_status(){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res    = $this->MPayment->chang_status( $aData );
         print_r( json_encode($res) );
     }
 }
-?>

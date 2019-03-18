@@ -90,7 +90,7 @@ $route['customer/(:any)']  			= 'Customer/CustomerController/$1';
 $route['promotion/(:any)']  		= 'Promotion/PromotionController/$1';
 $route['book/(:any)']  				= 'Book/BookController/$1';
 $route['bank/(:any)']  				= 'BankController/$1';
-
+$route['payment/(:any)']  			= 'PaymentController/$1';
 
 // $route['producttype/(:any)']  		= 'Product/ProducttypeController/$1';
 
