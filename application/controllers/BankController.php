@@ -36,15 +36,21 @@ class BankController extends CI_Controller {
         print_r( json_encode($res) );
     }
 
-    public function search_bankallname(){
-        $aData = $this->Decode_TripleDES( $_POST );
-        $res   = $this->MBank->search_bankallname( $aData );
-        print_r( json_encode($res) );
-    }
-
     public function search_banknumberlist( $aData = "" ){
         $aData  = $this->Decode_TripleDES( $_POST );
         $res     = $this->MBank->search_banknumberlist( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function save_data(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MBank->save_data( $aData );
+        print_r( json_encode($res) );
+    }
+
+    public function chang_status(){
+        $aData = $this->Decode_TripleDES( $_POST );        
+        $res   = $this->MBank->chang_status( $aData );
         print_r( json_encode($res) );
     }
 }
