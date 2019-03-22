@@ -30,11 +30,15 @@ class MPayment extends CI_Model {
 		$bank_name = ",B.name_".$aData["lang"]." AS bank_name";
 		$WHERE  .= " AND P.hotel_id ='".$aData["hotel_id"]."'";
 
-		$sql 	= "	SELECT P.* , C.prefix, C.name, C.last_name ,BL.account_number $bank_name
+		$sql 	= "	SELECT P.*, C.prefix, C.name, C.last_name,BL.account_number,B.name_th AS bank_name, 
+					-- BK.room_qty AS bok_room_qty, BK.customer_qty AS bok_customer_qty, BK.child_qty AS bok_child_qty, 
+					-- BK.check_in AS bok_check_in, BK.check_out AS bok_check_out, BK.prefix_book AS bok_prefix_book, 
+					BK.name_book AS bok_name_book, BK.lastname_book AS bok_lastname_book
 					FROM payment AS P
 					LEFT JOIN m_customer AS C ON P.m_customer_id = C.id
 					LEFT JOIN m_bank_number_list AS BL ON P.m_bank_number_list_id = BL.id
 					LEFT JOIN m_bank AS B ON BL.m_bank_id = B.id
+					LEFT JOIN booking AS BK ON P.booking_id = BK.id
 					WHERE 1 = 1  $WHERE 
 					ORDER BY P.id DESC
 					LIMIT $LIMIT";
@@ -43,9 +47,36 @@ class MPayment extends CI_Model {
 		$arr = array();
 		foreach ($query->result_array() as $key => $value) {
 			$arr[] = $value;
+
 		}
 		$arr["limit"] = $lm;
 		// debug($arr);
+		// echo $sql;
+		return $arr;
+	}
+
+	public function search_booking( $aData ){
+		if ( !isset($aData["booking_id"]) )        { $aData["booking_id"]     = "";}
+		if ( !isset($aData["is_waitpayment"]) )        { $aData["is_waitpayment"]     = "";}
+
+		$WHERE   = "";
+		$WHERE  .= ( $aData["booking_id"] 	== "" ) ? "" : " AND BK.id='".$aData["booking_id"]."'";
+		$WHERE  .= ( $aData["is_waitpayment"]      == "" ) ? "" : " AND BK.status='wait_payment'";
+
+		$sql = "SELECT BK.*, C.profile_img 
+				FROM booking AS BK 
+				LEFT JOIN m_customer AS C ON BK.m_customer_id_book = C.id
+				WHERE 1 = 1  $WHERE ";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+
+		}
+		// $arr["limit"] = $lm;
+		// debug($arr);
+		// echo $sql;
 		return $arr;
 	}
 
@@ -89,4 +120,6 @@ class MPayment extends CI_Model {
 
         return $aReturn;
 	}
+
+
 }

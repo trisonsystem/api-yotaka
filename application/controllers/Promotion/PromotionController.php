@@ -43,4 +43,10 @@ class PromotionController extends CI_Controller
         $res   = $this->MPromotion->chang_status( $aData );
         print_r( json_encode($res) );
     }
+
+    public function search_promotion_codeanddate( $aData = "" ){
+        $aData  = $this->Decode_TripleDES( $_POST );
+        $res     = $this->MPromotion->search_promotion_codeanddate( $aData );
+        print_r( json_encode($res) );
+    }
 }

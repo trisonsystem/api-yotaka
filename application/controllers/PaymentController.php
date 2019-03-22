@@ -47,4 +47,13 @@ class PaymentController extends CI_Controller {
         $res    = $this->MPayment->chang_status( $aData );
         print_r( json_encode($res) );
     }
+
+    public function search_booking(){
+        // echo "string";
+        
+        $aData = $this->Decode_TripleDES( $_POST );
+        // debug($aData, true);
+        $res   = $this->MPayment->search_booking( $aData );
+        print_r( json_encode($res) );
+    }
 }

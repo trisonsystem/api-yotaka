@@ -38,6 +38,38 @@ class MPromotion extends CI_Model
 		return $arr;
     }
 
+    public function search_promotion_codeanddate( $aData ){
+        $aReturn = array();
+        $arrParam = array('check_in', 'check_out', 'promotion_code', 'hotel_id');
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+
+        $WHERE = "";
+        $WHERE .= ( $aData["check_in"]      == "" ) ? "" : " AND PM.startdate <= '".$aData['check_in']."'";
+        $WHERE .= ( $aData["check_out"]      == "" ) ? "" : " AND PM.enddate >= '".$aData['check_out']."'";
+        $WHERE .= ( $aData["promotion_code"]      == "" ) ? "" : " AND PM.promotion_code <= '".$aData['promotion_code']."'";
+        $WHERE .= " AND status=1";
+        $WHERE  .= " AND PM.hotel_id='".$aData["hotel_id"]."'";
+
+        $sql = "SELECT *
+                FROM promotion AS PM
+                WHERE 1 = 1 $WHERE
+                ORDER BY PM.id DESC";
+
+        $query  = $this->db->query($sql);
+        $arr = array();
+        foreach ($query->result_array() as $key => $value) {
+            $arr[] = $value;
+        }
+        // echo $sql;
+        // debug($arr);
+        return $arr;
+    }
+
     public function save_data( $aData ){
     	$aReturn = array();
         $arrParam = array('txtPromotion_id', 'etxtPromotionTitle', 'etxtPromotionCode', 'etxtPromotionDescription', 'from_date', 'to_date', 'etxtPromotionPrice', 'txtPromotionImages', 'txtPromotion_status', 'hotel_id');
