@@ -13,6 +13,7 @@ class MPromotion extends CI_Model
         if ( !isset($aData["promotion_code"]) ) 	    { $aData["promotion_code"] 	= "";}
         if ( !isset($aData["promotion_title"]) ) 	    { $aData["promotion_title"] 	= "";}
         if ( !isset($aData["promotion_status"]) ) 		{ $aData["promotion_status"] 	= "";}
+        if ( !isset($aData["room_type_id"]) )       { $aData["room_type_id"]    = "";}
 
         $LIMIT 	 = ( $aData["page"] 	== "" ) ? "0, $lm" : (($aData["page"] * $lm) - $lm).",$lm" ;
 
@@ -21,10 +22,13 @@ class MPromotion extends CI_Model
         $WHERE  .= ( $aData["promotion_code"] 		== "" ) ? "" : " AND PM.promotion_code LIKE '%".$aData["promotion_code"]."%'";
         $WHERE  .= ( $aData["promotion_title"] 		== "" ) ? "" : " AND PM.title LIKE '%".$aData["promotion_title"]."%'";
         $WHERE  .= ( $aData["promotion_status"] 	== "" ) ? "" : " AND PM.status='".$aData["promotion_status"]."'";
+        $WHERE  .= ( $aData["room_type_id"]     == "" ) ? "" : " AND PML.m_room_type_id='".$aData["room_type_id"]."'";
         $WHERE  .= " AND PM.hotel_id='".$aData["hotel_id"]."'";
 
-        $sql = "SELECT *
-				FROM promotion AS PM
+        $sql = "SELECT PM.*, PML.m_room_type_id, PML.discount, RT.NAME AS room_type_name, PML.m_room_type_id AS room_type_id
+                FROM promotion AS PM 
+                RIGHT JOIN promotion_list AS PML ON PM.id = PML.promotion_id
+                LEFT JOIN m_room_type AS RT ON PML.m_room_type_id = RT.id
                 WHERE 1 = 1 $WHERE
                 ORDER BY PM.id DESC LIMIT $LIMIT";
 
@@ -35,6 +39,7 @@ class MPromotion extends CI_Model
 		}
 		$arr["limit"] = $lm;
 		// debug($arr);
+        // echo $sql;
 		return $arr;
     }
 
@@ -72,7 +77,7 @@ class MPromotion extends CI_Model
 
     public function save_data( $aData ){
     	$aReturn = array();
-        $arrParam = array('txtPromotion_id', 'etxtPromotionTitle', 'etxtPromotionCode', 'etxtPromotionDescription', 'from_date', 'to_date', 'etxtPromotionPrice', 'txtPromotionImages', 'txtPromotion_status', 'hotel_id');
+        $arrParam = array('txtPromotion_id', 'etxtPromotionTitle', 'etxtPromotionCode', 'etxtPromotionDescription', 'from_date', 'to_date', 'txtPromotionImages', 'txtPromotion_status', 'hotel_id', 'rroomType_id', 'rroomType_value');
         foreach ($arrParam as $key) {
             if(!isset($aData[$key])){
                 return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
@@ -104,8 +109,7 @@ class MPromotion extends CI_Model
         $aSave["description"]  = $aData["etxtPromotionDescription"];
         $aSave["startdate"]  = $aData["from_date"];
         $aSave["enddate"]  = $aData["to_date"];
-        $aSave["discount"]  = $aData["etxtPromotionPrice"];
-
+        // $aSave["discount"]  = $aData["etxtPromotionPrice"];
 
         if ($aData["txtPromotionImages"] != "0") {
             $aSave["promotion_img"]       = $n_path;
@@ -119,7 +123,20 @@ class MPromotion extends CI_Model
             $aSave["update_date"]   = date("Y-m-d H:i:s");
             $aSave["update_by"]     = $aData["user"];
 
-            if ($this->db->replace('promotion', $aSave)) {
+            if ($this->db->insert('promotion', $aSave)) {
+                $insert_id = $this->db->insert_id();
+                $bSave  = array();
+                $rroomType_id = explode(",", $aData["rroomType_id"]);
+                $rroomType_value = explode(",", $aData["rroomType_value"]);
+                if(count($rroomType_id) == count($rroomType_value)){
+                    for ($i=0; $i < count($rroomType_id); $i++) { 
+                        $bSave['promotion_id'] = $insert_id;
+                        $bSave['m_room_type_id'] = $rroomType_id[$i];
+                        $bSave['discount'] = $rroomType_value[$i];
+                        $this->db->replace('promotion_list', $bSave);
+                    }
+                }
+
                 $aReturn["flag"] = true;
                 $aReturn["msg"] = "success";
                 $aReturn["code"] = $code;
@@ -131,6 +148,27 @@ class MPromotion extends CI_Model
             $aSave["status"]    = $aData["txtPromotion_status"];
             $aSave["update_date"]           = date("Y-m-d H:i:s");
             $aSave["update_by"]             = $aData["user"];
+            
+            $sql = "DELETE FROM promotion_list WHERE promotion_id=".$aData["txtPromotion_id"]." AND m_room_type_id IN (".$aData["rroomType_id"].")";
+                $query = $this->db->query($sql);
+            $rroomType_id = explode(",", $aData["rroomType_id"]);
+            if(count($rroomType_id) > 1){
+                $rroomType_value = explode(",", $aData["rroomType_value"]);
+                if(count($rroomType_id) == count($rroomType_value)){
+                    for ($i=0; $i < count($rroomType_id); $i++) { 
+                        $bSave['promotion_id'] = $aData["txtPromotion_id"];
+                        $bSave['m_room_type_id'] = $rroomType_id[$i];
+                        $bSave['discount'] = $rroomType_value[$i];
+                        $this->db->replace('promotion_list', $bSave);
+                    }
+                }
+            }else{
+                $bSave['promotion_id'] = $aData["txtPromotion_id"];
+                $bSave['m_room_type_id'] = $aData["rroomType_id"];
+                $bSave['discount'] = $aData["rroomType_value"];
+                $this->db->replace('promotion_list', $bSave);
+            }
+            
             $this->db->where("id", $aData["txtPromotion_id"] );
             if ($this->db->update('promotion', $aSave)) {
                 $aReturn["flag"] = true;
