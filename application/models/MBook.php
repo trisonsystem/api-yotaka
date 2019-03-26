@@ -155,6 +155,7 @@ class MBook extends CI_Model {
 		$arr   = array();
 		$arr[] = array('id'=>'wait_payment' ,'name' => 's_wait_payment');
 		$arr[] = array('id'=>'already_paid' ,'name' => 's_already_paid');
+		$arr[] = array('id'=>'outstanding'  ,'name' => 's_outstanding');
 		$arr[] = array('id'=>'check_in'  ,'name' => 's_check_in');
 		$arr[] = array('id'=>'check_out' ,'name' => 's_check_out');
 		$arr[] = array('id'=>'cancel'   ,'name' => 's_cancel');

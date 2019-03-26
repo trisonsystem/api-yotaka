@@ -45,7 +45,7 @@ class MPromotion extends CI_Model
 
     public function search_promotion_codeanddate( $aData ){
         $aReturn = array();
-        $arrParam = array('check_in', 'check_out', 'promotion_code', 'hotel_id');
+        $arrParam = array('check_in', 'check_out', 'promotion_code', 'hotel_id', 'room_type');
         foreach ($arrParam as $key) {
             if(!isset($aData[$key])){
                 return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
@@ -57,11 +57,14 @@ class MPromotion extends CI_Model
         $WHERE .= ( $aData["check_in"]      == "" ) ? "" : " AND PM.startdate <= '".$aData['check_in']."'";
         $WHERE .= ( $aData["check_out"]      == "" ) ? "" : " AND PM.enddate >= '".$aData['check_out']."'";
         $WHERE .= ( $aData["promotion_code"]      == "" ) ? "" : " AND PM.promotion_code <= '".$aData['promotion_code']."'";
-        $WHERE .= " AND status=1";
+        $WHERE .= ( $aData["room_type"]      == "" ) ? "" : " AND RT.id IN (".$aData['room_type'].")";
+        $WHERE .= " AND PM.status='1'";
         $WHERE  .= " AND PM.hotel_id='".$aData["hotel_id"]."'";
 
-        $sql = "SELECT *
-                FROM promotion AS PM
+        $sql = "SELECT PM.*, PML.m_room_type_id, PML.discount, RT.name AS room_type_name
+                FROM promotion AS PM 
+                RIGHT JOIN promotion_list AS PML ON PM.id = PML.promotion_id
+                LEFT JOIN m_room_type AS RT ON PML.m_room_type_id = RT.id
                 WHERE 1 = 1 $WHERE
                 ORDER BY PM.id DESC";
 

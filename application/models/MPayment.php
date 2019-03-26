@@ -62,11 +62,33 @@ class MPayment extends CI_Model {
 		$WHERE   = "";
 		$WHERE  .= ( $aData["booking_id"] 	== "" ) ? "" : " AND BK.id='".$aData["booking_id"]."'";
 		$WHERE  .= ( $aData["is_waitpayment"]      == "" ) ? "" : " AND BK.status='wait_payment'";
+		$WHERE 	.= " AND BK.status IN('wait_payment', 'outstanding') GROUP BY BL.m_room_id";
 
-		$sql = "SELECT BK.*, C.profile_img 
-				FROM booking AS BK 
+		$sql = "SELECT BK.*, RO.code AS room_code, RO.name AS room_name, RO.price AS room_price, RT.name AS room_type, RT.id AS room_typeid, C.profile_img
+				FROM booking AS BK
 				LEFT JOIN m_customer AS C ON BK.m_customer_id_book = C.id
+				LEFT JOIN booking_room_list AS BL ON BK.id = BL.booking_id
+				LEFT JOIN m_room AS RO ON BL.m_room_id = RO.id
+				LEFT JOIN m_room_type AS RT ON RO.m_room_type_id = RT.id
 				WHERE 1 = 1  $WHERE ";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+
+		}
+		// $arr["limit"] = $lm;
+		// debug($arr);
+		// echo $sql;
+		return $arr;
+	}
+
+	public function search_booking_cusprofile( $aData ){
+		$sql = "SELECT BK.*, C.profile_img
+				FROM booking AS BK
+				LEFT JOIN m_customer AS C ON BK.m_customer_id_book = C.id
+				WHERE 1 = 1 AND BK.status IN('wait_payment', 'outstanding') ";
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();
