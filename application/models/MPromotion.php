@@ -56,7 +56,7 @@ class MPromotion extends CI_Model
         $WHERE = "";
         $WHERE .= ( $aData["check_in"]      == "" ) ? "" : " AND PM.startdate <= '".$aData['check_in']."'";
         $WHERE .= ( $aData["check_out"]      == "" ) ? "" : " AND PM.enddate >= '".$aData['check_out']."'";
-        $WHERE .= ( $aData["promotion_code"]      == "" ) ? "" : " AND PM.promotion_code <= '".$aData['promotion_code']."'";
+        $WHERE .= ( $aData["promotion_code"]      == "" ) ? "" : " AND PM.promotion_code = '".$aData['promotion_code']."'";
         $WHERE .= ( $aData["room_type"]      == "" ) ? "" : " AND RT.id IN (".$aData['room_type'].")";
         $WHERE .= " AND PM.status='1'";
         $WHERE  .= " AND PM.hotel_id='".$aData["hotel_id"]."'";
@@ -73,7 +73,7 @@ class MPromotion extends CI_Model
         foreach ($query->result_array() as $key => $value) {
             $arr[] = $value;
         }
-        // echo $sql;
+        // echo $sql;echo "<br>";
         // debug($arr);
         return $arr;
     }
