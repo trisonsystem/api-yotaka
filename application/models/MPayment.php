@@ -17,6 +17,7 @@ class MPayment extends CI_Model {
 		if ( !isset($aData["lang"]) ) 			{ $aData["lang"] 				= "en";}
 		if ( !isset($aData["slPaymentType"]) ) 	{ $aData["slPaymentType"] 		= "";}
 		if ( !isset($aData["payment_time"]) ) 	{ $aData["payment_time"] 		= "";}
+		if ( !isset($aData["booking_id"]) ) 	{ $aData["booking_id"] 		= "";}
 
 		$LIMIT 	 = ( $aData["page"] 	== "" ) ? "0, $lm" : (($aData["page"] * $lm) - $lm).",$lm" ;
 
@@ -27,6 +28,7 @@ class MPayment extends CI_Model {
 		$WHERE  .= ( $aData["bank_transfer_to"] 	== "" ) ? "" : " AND P.m_bank_number_list_id = '".$aData["bank_transfer_to"]."'";
 		$WHERE  .= ( $aData["slPaymentType"] 		== "" ) ? "" : " AND P.pay_type ='".$aData["slPaymentType"]."'";
 		$WHERE  .= ( $aData["payment_time"] 		== "" ) ? "" : " AND P.pay_time LIKE '".$this->convert_date_to_base($aData["payment_time"])."%'";
+		$WHERE  .= ( $aData["booking_id"] 	== "" ) ? "" : " AND P.booking_id='".$aData["booking_id"]."'";
 		$bank_name = ",B.name_".$aData["lang"]." AS bank_name";
 		$WHERE  .= " AND P.hotel_id ='".$aData["hotel_id"]."'";
 
@@ -88,13 +90,12 @@ class MPayment extends CI_Model {
 		$sql = "SELECT BK.*, C.profile_img
 				FROM booking AS BK
 				LEFT JOIN m_customer AS C ON BK.m_customer_id_book = C.id
-				WHERE 1 = 1 AND BK.status IN('wait_payment', 'outstanding') ";
+				WHERE 1 = 1 AND BK.status IN('wait_payment', 'outstanding')";
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();
 		foreach ($query->result_array() as $key => $value) {
 			$arr[] = $value;
-
 		}
 		// $arr["limit"] = $lm;
 		// debug($arr);
@@ -106,6 +107,7 @@ class MPayment extends CI_Model {
 		$arr   = array();
 		$arr[] = array('id'=>'wait_confirm' ,'name' => 'wait_confirm');
 		$arr[] = array('id'=>'already_paid' ,'name' => 'already_paid');
+		$arr[] = array('id'=>'outstanding' ,'name' => 'outstanding');
 		$arr[] = array('id'=>'cancel' ,'name' => 'cancel');
 
 		return $arr;
@@ -143,5 +145,106 @@ class MPayment extends CI_Model {
         return $aReturn;
 	}
 
+	public function save_data( $aData ){
+		$this->check_param( $aData, $aData["eslPaytype"]);
 
+		$aSave   = array();
+        $aSave["booking_id"]  = $aData["etxtPayment_booking_id"];
+        $aSave["m_customer_id"]  = $aData["etxtPayment_m_customer_id_book"];        
+        $aSave["summary"]  = $aData["etxtPayment_totroomprice"];        
+        $aSave["discount"]  = $aData["etxtPayment_discount"];
+        $aSave["total"]  = $aData["etxtPayment_total"];
+        $aSave["pay_amount"]  = $aData["etxtPaymentAmount"];        
+        $aSave["promotion_id"]  = $aData["etxtPayment_promotion_id"];        
+        $aSave["pay_type"]  = $aData["eslPaytype"];
+
+        $aSave["m_bank_id_transfer"]  = $aData["eslPaymentType"];
+        $aSave["m_bank_number_list_id"]  = $aData["eslBankTransferTo"];        
+        $aSave["transfer_date"]  = date("d-m-Y", strtotime($aData["txtPaymentDateTime"]));
+        $ttime = $aData["timeHour"] . ":" . $aData["timeMinute"];
+        $aSave["transfer_time"]  = date("H:i:s", strtotime($ttime));
+
+        $aSave["transfer_img"]  = "";
+        $cardData = array(
+        	'card_id' => $aData["etxtPayment_cardcode"],
+        	'card_name' => $aData["etxtPayment_cardname"],
+        	'card_expireddate' => $aData["etxtPayment_cardexpireddate"],
+        	'card_cvv' => $aData["etxtPayment_cardevv"]
+        );
+        $aSave["pay_card"]  = json_encode($cardData);
+
+        $aSave["remark"]  = $aData["etxtPaymentDescription"];
+        $aSave["pay_time"]  = date("Y-m-d H:i:s");
+        $aSave["status"]  = "already_paid";
+        
+        if ($aData['txtPayment_id'] == "0") {
+            $aSave["hotel_id"]      = $aData["hotel_id"];
+            $aSave["create_date"]   = date("Y-m-d H:i:s");
+            $aSave["create_by"]     = $aData["user"];
+            $aSave["update_date"]   = date("Y-m-d H:i:s");
+            $aSave["update_by"]     = $aData["user"];
+
+            if ($this->db->replace('payment', $aSave)) {
+            	if($aSave["total"] == $aSave["pay_amount"]){ //กรณีจ่ายครบเต็มจำนวน
+	        		$bSave["status"]    		= "already_paid";
+        		}else{
+        			$bSave["status"]    		= "outstanding";
+        		}
+        		$bSave["update_date"]           = date("Y-m-d H:i:s");
+	            $bSave["update_by"]             = $aData["user"];
+        		$this->db->where("id", $aData["etxtPayment_booking_id"] );
+        		$this->db->update('booking', $bSave);
+
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        } else {
+            $aSave["status"]    = $aData["txtPosition_status"];
+            $aSave["update_date"]           = date("Y-m-d H:i:s");
+            $aSave["update_by"]             = $aData["user"];
+            $this->db->where("id", $aData["txtPayment_id"] );
+            if ($this->db->update('payment', $aSave)) {
+                $aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+            }else{
+                $aReturn["flag"] = false;
+                $aReturn["msg"] = "Error SQL !!!";
+            }
+        }
+
+        return $aReturn;
+
+	}
+
+	public function check_param( $aData, $useCase ){
+		$aReturn = array();
+
+		switch ($useCase) {
+			case 'transfer':
+				$arrParam = array('hotel_id', 'txtPayment_id', 'etxtPayment_booking_id', 'etxtPayment_m_customer_id_book', 'etxtPayment_m_customer_id_guest', 'etxtPayment_promotion_id', 'etxtPayment_check_in', 'etxtPayment_check_out', 'etxtPayment_name_book', 'etxtPayment_lastname_book', 'etxtPayment_name_guest', 'etxtPayment_lastname_guest', 'eslPaytype', 'etxtPayment_total', 'etxtPaymentAmount', 'etxtPayment_discount', 'etxtPayment_totroomprice', 'eslPaymentType', 'eslBankTransferTo');
+				break;
+			
+			case 'pay_cash':
+				$arrParam = array('hotel_id', 'txtPayment_id', 'etxtPayment_booking_id', 'etxtPayment_m_customer_id_book', 'etxtPayment_m_customer_id_guest', 'etxtPayment_promotion_id', 'etxtPayment_check_in', 'etxtPayment_check_out', 'etxtPayment_name_book', 'etxtPayment_lastname_book', 'etxtPayment_name_guest', 'etxtPayment_lastname_guest', 'eslPaytype', 'etxtPayment_total', 'etxtPaymentAmount', 'etxtPayment_discount', 'etxtPayment_totroomprice');
+				break;
+
+			case 'visa':
+				# code...
+				break;
+
+			case 'wallet':
+				# code...
+				break;
+		}
+
+        foreach ($arrParam as $key) {
+            if(!isset($aData[$key])){
+                return array( "flag"=>false, "msg"=>"Parameter Error ".$key);
+                exit();
+            }
+        }
+	}
 }
