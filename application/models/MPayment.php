@@ -7,6 +7,7 @@ class MPayment extends CI_Model {
 	}
 
 	public function search_payment( $aData ){
+		// debug($aData, true);
 		$lm = 15;
 		if ( !isset($aData["page"]) ) 		 	{ $aData["page"] 				= 1;}
 		if ( !isset($aData["bank_transfer_form"]) ){ $aData["bank_transfer_form"] = "";}
@@ -53,7 +54,7 @@ class MPayment extends CI_Model {
 		}
 		$arr["limit"] = $lm;
 		// debug($arr);
-		// echo $sql;
+		// echo $WHERE;
 		return $arr;
 	}
 
@@ -80,26 +81,39 @@ class MPayment extends CI_Model {
 			$arr[] = $value;
 
 		}
-		// $arr["limit"] = $lm;
-		// debug($arr);
-		// echo $sql;
+
 		return $arr;
 	}
 
 	public function search_booking_cusprofile( $aData ){
+		if ( !isset($aData["book_id"]) )        { $aData["book_id"]     = "";}
+
+		$WHERE   = "";
+		$WHERE  .= ( $aData["book_id"] 	== "" ) ? "" : " AND BK.id='".$aData["book_id"]."'";
+
 		$sql = "SELECT BK.*, C.profile_img
 				FROM booking AS BK
 				LEFT JOIN m_customer AS C ON BK.m_customer_id_book = C.id
-				WHERE 1 = 1 AND BK.status IN('wait_payment', 'outstanding')";
+				WHERE 1 = 1 $WHERE AND BK.status IN('wait_payment', 'outstanding')";
 		$query 	= $this->db->query($sql);
 		
 		$arr = array();
 		foreach ($query->result_array() as $key => $value) {
 			$arr[] = $value;
 		}
-		// $arr["limit"] = $lm;
-		// debug($arr);
-		// echo $sql;
+		return $arr;
+	}
+
+	public function search_booking_cusprofile_notin( $aData ){
+		$sql = "SELECT BK.*, C.profile_img
+				FROM booking AS BK
+				LEFT JOIN m_customer AS C ON BK.m_customer_id_book = C.id";
+		$query 	= $this->db->query($sql);
+		
+		$arr = array();
+		foreach ($query->result_array() as $key => $value) {
+			$arr[] = $value;
+		}
 		return $arr;
 	}
 
@@ -146,7 +160,26 @@ class MPayment extends CI_Model {
 	}
 
 	public function save_data( $aData ){
+		$aReturn = array();
 		$this->check_param( $aData, $aData["eslPaytype"]);
+
+		$fodel    = "assets/upload/promotion_images/";
+        $aFN      = explode(".", $aData["txtImages"]);
+        $n_name   = $aFN[count($aFN)-1];
+
+        if ($aData["txtPayment_id"] == "0") {
+            $code = $aData["etxtPayment_m_customer_id_book"];
+        }else{
+            $arrStr = explode("/", $aFN[0]);
+            
+            if ($aData["oldImages"] != $arrStr[3]) {
+                $code = $aData["etxtPayment_m_customer_id_book"]."(1)";
+            }else{
+                $code = $aData["oldImages"];
+            }
+        }
+
+        $n_path   = $fodel.$code.".".$n_name;
 
 		$aSave   = array();
         $aSave["booking_id"]  = $aData["etxtPayment_booking_id"];
@@ -164,7 +197,10 @@ class MPayment extends CI_Model {
         $ttime = $aData["timeHour"] . ":" . $aData["timeMinute"];
         $aSave["transfer_time"]  = date("H:i:s", strtotime($ttime));
 
-        $aSave["transfer_img"]  = "";
+        if($aData["txtImages"] != "0"){
+        	$aSave["transfer_img"]  = $n_path;
+        }
+        
         $cardData = array(
         	'card_id' => $aData["etxtPayment_cardcode"],
         	'card_name' => $aData["etxtPayment_cardname"],
@@ -185,7 +221,11 @@ class MPayment extends CI_Model {
             $aSave["update_by"]     = $aData["user"];
 
             if ($this->db->replace('payment', $aSave)) {
-            	if($aSave["total"] == $aSave["pay_amount"]){ //กรณีจ่ายครบเต็มจำนวน
+            	$aReturn["flag"] = true;
+                $aReturn["msg"] = "success";
+                $aReturn["code"] = $code;
+                // debug($aReturn, true);
+            	if($aSave["total"] == $aSave["pay_amount"]){
 	        		$bSave["status"]    		= "already_paid";
         		}else{
         			$bSave["status"]    		= "outstanding";
@@ -193,10 +233,8 @@ class MPayment extends CI_Model {
         		$bSave["update_date"]           = date("Y-m-d H:i:s");
 	            $bSave["update_by"]             = $aData["user"];
         		$this->db->where("id", $aData["etxtPayment_booking_id"] );
-        		$this->db->update('booking', $bSave);
-
-                $aReturn["flag"] = true;
-                $aReturn["msg"] = "success";
+        		$this->db->update('booking', $bSave);      
+        		// return $aReturn;          
             }else{
                 $aReturn["flag"] = false;
                 $aReturn["msg"] = "Error SQL !!!";
@@ -214,13 +252,13 @@ class MPayment extends CI_Model {
                 $aReturn["msg"] = "Error SQL !!!";
             }
         }
-
+       
         return $aReturn;
 
 	}
 
 	public function check_param( $aData, $useCase ){
-		$aReturn = array();
+		$arrParam = array();
 
 		switch ($useCase) {
 			case 'transfer':

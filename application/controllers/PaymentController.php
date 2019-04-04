@@ -60,6 +60,12 @@ class PaymentController extends CI_Controller {
         print_r( json_encode($res) );
     }
 
+    public function search_booking_cusprofile_notin(){
+        $aData = $this->Decode_TripleDES( $_POST );
+        $res   = $this->MPayment->search_booking_cusprofile_notin( $aData );
+        print_r( json_encode($res) );
+    }
+
     public function save_data(){
         // debug($_POST, true);
         $aData = $this->Decode_TripleDES( $_POST );
