@@ -19,7 +19,7 @@ class ProducttypeController extends CI_Controller {
     public function readProducttype(){
 
         $p_data             = $this->input->post('data');
-        // print_r($p_data);exit();
+        
         $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
         $dataReceive        = json_decode($dataReceive,true);
 
@@ -49,6 +49,7 @@ class ProducttypeController extends CI_Controller {
     public function saveProducttype(){
 
         $p_data             = $this->input->post('data');
+
         $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
         $dataReceive        = json_decode($dataReceive,true);
 
@@ -72,6 +73,64 @@ class ProducttypeController extends CI_Controller {
         $this->load->model('MProducttype');
 
         $com = $this->MProducttype->saveProducttype($dataReceive);
+        echo json_encode($com);
+    }
+
+    public function readEditProducttype(){
+
+        $p_data             = $this->input->post('data');
+        $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
+        $dataReceive        = json_decode($dataReceive,true);
+
+        if($dataReceive == ''){
+            $arrRetrun = array( "sflag"=>false, "msg"=>"Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+
+        ## check param
+        $arrParam = array('id');
+        foreach ($arrParam as $key) {
+            if(!isset($dataReceive[$key])){
+                $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
+                echo json_encode($arrRetrun);
+                return;
+            }
+        }
+        ## --
+
+        $this->load->model('MProducttype');
+
+        $com = $this->MProducttype->readEditProducttype($dataReceive);
+        echo json_encode($com);
+    }
+
+    public function delProducttype(){
+
+        $p_data             = $this->input->post('data');
+        $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
+        $dataReceive        = json_decode($dataReceive,true);
+
+        if($dataReceive == ''){
+            $arrRetrun = array( "sflag"=>false, "msg"=>"Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+
+        ## check param
+        $arrParam = array('id');
+        foreach ($arrParam as $key) {
+            if(!isset($dataReceive[$key])){
+                $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
+                echo json_encode($arrRetrun);
+                return;
+            }
+        }
+        ## --
+
+        $this->load->model('MProducttype');
+
+        $com = $this->MProducttype->delProducttype($dataReceive);
         echo json_encode($com);
     }
 }

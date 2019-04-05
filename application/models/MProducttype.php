@@ -24,7 +24,7 @@ class MProducttype extends CI_Model {
 
 		$sqlAuto	 = "select * ";
 		$sqlAuto	.= "from m_product_type as pt ";
-		$sqlAuto	.= "where 1 ".$where." order by pt.id desc ";
+		$sqlAuto	.= "where 1 and status = 0".$where." order by pt.id desc ";
 		$sqlAuto	.= "limit ".$limit_s.",".$limit_e;
 		$queryAuto 	= $this->db->query($sqlAuto);
 		$checkAuto  = $queryAuto->num_rows();
@@ -51,35 +51,30 @@ class MProducttype extends CI_Model {
 
 		if($arrpost['producttypeid'] ==''){
         	$dataIns = array(
-                    'name'  => $arrpost['productname'],
-                    'status'    		=> $arrpost['productprice'],
-                    'remake'    	=> $arrpost['remake'],
+                    'name'  => $arrpost['producttypename'],
+                    'status'    	=> '00',
                     'create_date'  	=> date('Y-m-d H:i:s'),
+                    'create_by'		=> $arrpost['user'],
                     'update_date'  	=> date('Y-m-d H:i:s'),
+                    'update_by'		=> $arrpost['user']
                 );
-        	$queryInsert    = $this->db->insert('stock',$dataIns);
+        	$queryInsert    = $this->db->insert('m_product_type',$dataIns);
         	$statusQuery 	= $this->db->affected_rows();
 
 		}else{
-
-			$sqlChk	 	= "select * from stock where product_id = '".$arrpost['productid']."' and id !='".$arrpost['stockid']."' ";
+			$sqlChk	 	= "select * from m_product_type where name = '".$arrpost['producttypename']."'";
 			$queryChk 	= $this->db->query($sqlChk);
 			$checkChk  	= $queryChk->num_rows();
 
 	        if($checkChk == 0){
 
 				$dataUpdate = array(
-	                        'branch_id'     => $arrpost['productbranch'],
-	                        'product_id'    => $arrpost['productid'],
-	                        'product_name'  => $arrpost['productname'],
-	                        'amount'    	=> $arrpost['productprice'],
-	                        'price'    		=> $arrpost['productsell'],
-	                        'sell'    		=> $arrpost['productamount'],
-	                        'remake'    	=> $arrpost['remake'],
-	                        'update_date'  	=> date('Y-m-d H:i:s')
+	                        'name'  => $arrpost['producttypename'],
+		                    'update_date'  	=> date('Y-m-d H:i:s'),
+		                    'update_by'		=> $arrpost['user']
 	                    );
-				$this->db->where('id', $arrpost['stockid']);
-	        	$this->db->update('stock', $dataUpdate);
+				$this->db->where('id', $arrpost['producttypeid']);
+	        	$this->db->update('m_product_type', $dataUpdate);
 	        	$statusQuery 	= $this->db->affected_rows();
 	        }else{
 	        	$arr['msg'] = 'error product id duplicate';
@@ -92,6 +87,47 @@ class MProducttype extends CI_Model {
         	$arr['msg'] 		= 'save succress';
         }else{
         	$arr['msg'] 		= 'save error 2';
+        }
+
+        return $arr;
+	}
+
+	public function readEditProducttype($arrpost){
+
+		$arr = array('status_flag'=>0,'msg'=>'no data');
+
+		$sqlAuto 	 = "select * ";
+		$sqlAuto 	.= "from m_product_type as pt ";
+		$sqlAuto	.= "where pt.id ='".$arrpost['id']."' ";
+		$queryAuto 	= $this->db->query($sqlAuto);
+		$checkAuto  = $queryAuto->num_rows();
+
+		if($checkAuto > 0){
+        	$arr['status_flag'] = 1;
+        	$arr['msg'] 		= $queryAuto->row_array();
+        }
+
+		return $arr;
+	}
+
+	public function delProducttype($arrpost){
+
+		$arr = array('status_flag'=>0,'msg'=>'error');
+
+       	$dataUpdate = array(
+                    'status'       	=> 99,
+                    'update_date'  	=> date('Y-m-d H:i:s')
+                );
+		$this->db->where('id', $arrpost['id']);
+    	$this->db->update('m_product_type', $dataUpdate);
+
+        $statusQuery 	= $this->db->affected_rows();
+
+        if($statusQuery == 1){
+        	$arr['status_flag'] = 1;
+        	$arr['msg'] 		= 'Delect succress';
+        }else{
+        	$arr['msg'] 		= 'Delect error';
         }
 
         return $arr;

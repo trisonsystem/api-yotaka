@@ -19,6 +19,7 @@ class StockController extends CI_Controller {
     public function readStock(){
 
         $p_data             = $this->input->post('data');
+        print_r($p_data);exit();
         $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
         $dataReceive        = json_decode($dataReceive,true);
 
