@@ -36,7 +36,7 @@ class MPayment extends CI_Model {
 		$sql 	= "	SELECT P.*, C.prefix, C.name, C.last_name,BL.account_number,B.name_th AS bank_name, 
 					-- BK.room_qty AS bok_room_qty, BK.customer_qty AS bok_customer_qty, BK.child_qty AS bok_child_qty, 
 					-- BK.check_in AS bok_check_in, BK.check_out AS bok_check_out, BK.prefix_book AS bok_prefix_book, 
-					BK.name_book AS bok_name_book, BK.lastname_book AS bok_lastname_book
+					BK.name_book AS bok_name_book, BK.lastname_book AS bok_lastname_book, BK.status AS bok_status
 					FROM payment AS P
 					LEFT JOIN m_customer AS C ON P.m_customer_id = C.id
 					LEFT JOIN m_bank_number_list AS BL ON P.m_bank_number_list_id = BL.id
@@ -105,6 +105,11 @@ class MPayment extends CI_Model {
 	}
 
 	public function search_booking_cusprofile_notin( $aData ){
+		if ( !isset($aData["book_id"]) )        { $aData["book_id"]     = "";}
+
+		$WHERE   = "";
+		$WHERE  .= ( $aData["book_id"] 	== "" ) ? "" : " AND BK.id='".$aData["book_id"]."'";
+
 		$sql = "SELECT BK.*, C.profile_img
 				FROM booking AS BK
 				LEFT JOIN m_customer AS C ON BK.m_customer_id_book = C.id";
@@ -211,7 +216,12 @@ class MPayment extends CI_Model {
 
         $aSave["remark"]  = $aData["etxtPaymentDescription"];
         $aSave["pay_time"]  = date("Y-m-d H:i:s");
-        $aSave["status"]  = "already_paid";
+
+        if($aSave["total"] == $aSave["pay_amount"]){
+    		$aSave["status"]    		= "already_paid";
+		}else{
+			$aSave["status"]    		= "outstanding";
+		}
         
         if ($aData['txtPayment_id'] == "0") {
             $aSave["hotel_id"]      = $aData["hotel_id"];
