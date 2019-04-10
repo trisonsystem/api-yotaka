@@ -77,6 +77,13 @@ $route['lang/(:any)']              = 'LanguageController/$1';
 
 }
 
+{
+	$route['unit/read_unit']		= 'UnitController/readUnit';
+	$route['unit/save_unit']		= 'UnitController/saveUnit';
+	$route['unit/readedit_unit']	= 'UnitController/readEditUnit';
+	$route['unit/del_unit']			= 'UnitController/delUnit';
+}
+
 $route['master/(:any)']  			= 'MasterController/$1';
 $route['division/(:any)']  			= 'Division/DivisionController/$1';
 $route['department/(:any)']  		= 'Department/DepartmentController/$1';
