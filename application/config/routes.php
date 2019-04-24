@@ -84,6 +84,14 @@ $route['lang/(:any)']              = 'LanguageController/$1';
 	$route['unit/del_unit']			= 'UnitController/delUnit';
 }
 
+{
+	$route['importorder/read_runbill']		= 'ImportorderController/runbill';
+	// $route['importorder/read_importorder']		= 'ImportorderController/readImportorder';
+	$route['importorder/save_importorder']		= 'ImportorderController/saveImportOrder';
+	// $route['unit/readedit_unit']	= 'UnitController/readEditUnit';
+	// $route['unit/del_unit']			= 'UnitController/delUnit';
+}
+
 $route['master/(:any)']  			= 'MasterController/$1';
 $route['division/(:any)']  			= 'Division/DivisionController/$1';
 $route['department/(:any)']  		= 'Department/DepartmentController/$1';
