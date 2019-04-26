@@ -80,11 +80,12 @@ class ImportorderController extends CI_Controller {
             }
         }
         ## --
-
+        // debug($dataReceive, true);
         $this->load->model('MImportorder');
 
         $dataReturn = $this->MImportorder->readImportorder($dataReceive);
-        echo json_encode($dataReturn);
+        // echo json_encode($dataReturn);
+        print_r( json_encode($dataReturn) );
     }
 
 }

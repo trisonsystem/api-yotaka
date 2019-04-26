@@ -110,11 +110,27 @@ class MImportorder extends CI_Model {
 
 				$value['autokey']	= $limit_s+$key+1;
 				$arr['data'][] 		= $value;
+				// $arr['data'][] = $this->readImportorderList($value['id']);
 			}
+			$arr['status']     = true;
+			$arr['optionPage'] = array('page' => $arrpost['page'], 'listCount' => count($arr['data']));
 		}
 
 		// debug($arr);
 
 		return $arr;
+	}
+
+	public function readImportorderList($ipo_id){
+		$sql = "select * from import_order_list where order_id = " . $ipo_id;
+
+        $query  = $this->db->query($sql);
+        $arr = array();
+        foreach ($query->result_array() as $key => $value) {
+            $arr[] = $value;
+        }
+        // echo $sql;echo "<br>";
+        // debug($arr);
+        return $arr;
 	}
 }
