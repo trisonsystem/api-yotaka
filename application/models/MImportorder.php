@@ -143,7 +143,7 @@ class MImportorder extends CI_Model {
 		$sqlAuto	 = "select io.*, di.name as distri_name ";
 		$sqlAuto	.= "from import_order as io ";
 		$sqlAuto	.= "left join distributor as di on io.distributor_id = di.id ";
-		$sqlAuto	.= "where 1 ".$where." order by io.id desc ";
+		$sqlAuto	.= "where 1 and io.status <> 99 ".$where." order by io.id desc ";
 		$sqlAuto	.= "limit ".$limit_s.",".$limit_e;
 		$queryAuto 	= $this->db->query($sqlAuto);
 		$checkAuto  = $queryAuto->num_rows();
@@ -203,16 +203,36 @@ class MImportorder extends CI_Model {
 	    return $row;
 	}
 
-	public function readImportorderList($ipo_id){
-		$sql = "select * from import_order_list where order_id = " . $ipo_id;
+	public function readImportorder_list( $arrpost ){
+		// $arr = array('status_flag'=>0,'msg'=>'no data');
 
-        $query  = $this->db->query($sql);
-        $arr = array();
-        foreach ($query->result_array() as $key => $value) {
-            $arr[] = $value;
-        }
+		// $sql = "select * from import_order_list where order_id = " . $arrpost['doc_id'];
+		$sql = "select impl.*, ";
+		$sql .= "pd.id as product_id ,pd.code as product_code, pd.name as product_name, ";
+		// $sql .= "pd.type as product_type, pd.u";
+		$sql .= "un.name as unit_name ";
+		$sql .= "from import_order_list as impl ";
+		$sql .= "left join product as pd on impl.product_id = pd.id ";
+		$sql .= "left join m_unit as un on pd.unit_id = un.id ";
+		$sql .= "where impl.order_id = " . $arrpost['doc_id'];
 
-        return $arr;
+        $queryAuto 	= $this->db->query($sql);
+		$checkAuto  = $queryAuto->num_rows();
+
+		// $arr['status_flag'] = 0;
+        if($checkAuto > 0){
+        	// $arr['status_flag'] = 1;
+			foreach ($queryAuto->result_array() as $key => $value) {
+
+				// $value['autokey']	= $limit_s+$key+1;
+				$arr['data'][] 		= $value;
+			}
+			
+		}
+
+		// debug($arr);
+
+		return $arr;
 	}
 
 	public function approveImportOrder($arrpost){
@@ -236,7 +256,7 @@ class MImportorder extends CI_Model {
         		$re = $arrpost['remark'];
         	}
 
-			$aSave["status"]   = "99";
+			$aSave["status"]   = "2";
 			$aSave["remark"]	= $row['remark'] . "  /**remark delete " . $re . "**/";
 
 			$this->db->where("id", $arrpost['doc_id']);
@@ -254,5 +274,29 @@ class MImportorder extends CI_Model {
 
         return $arr;
 
+	}
+
+	public function delImportOrder( $arrpost ){
+		$arr 		 = array('status_flag'=>0,'msg'=>'error');
+		$statusQuery = 0;
+
+		$aSave["status"]   = "99"; 
+
+		$this->db->where("id", $arrpost['doc_id']);
+		if ($this->db->update('import_order',$aSave)) {
+			$statusQuery 	= $this->db->affected_rows();
+
+			$this->db->where("order_id", $arrpost['doc_id']);
+			$this->db->update('import_order_list',$aSave);
+		}
+
+		if($statusQuery == 1){
+        	$arr['status_flag'] = 1;
+        	$arr['msg'] 		= 'save succress';
+        }else{
+        	$arr['msg'] 		= 'save error 2';
+        }
+
+        return $arr;
 	}
 }
