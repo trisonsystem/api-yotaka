@@ -57,6 +57,35 @@ class ImportorderController extends CI_Controller {
         echo json_encode($com);
     }
 
+    public function approve_importorder(){
+        $p_data             = $this->input->post('data');
+
+        $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
+        $dataReceive        = json_decode($dataReceive,true);
+
+        if($dataReceive == ''){
+            $arrRetrun = array( "sflag"=>false, "msg"=>"Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+
+        ## check param
+        $arrParam = array('doc_id');
+        foreach ($arrParam as $key) {
+            if(!isset($dataReceive[$key])){
+                $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
+                echo json_encode($arrRetrun);
+                return;
+            }
+        }
+        ## --
+
+        $this->load->model('MImportorder');
+
+        $com = $this->MImportorder->approveImportOrder($dataReceive);
+        echo json_encode($com);
+    }
+
     public function readImportorder(){
 
         $p_data             = $this->input->post('data');
@@ -80,11 +109,39 @@ class ImportorderController extends CI_Controller {
             }
         }
         ## --
-        // debug($dataReceive, true);
+        
         $this->load->model('MImportorder');
 
         $dataReturn = $this->MImportorder->readImportorder($dataReceive);
-        // echo json_encode($dataReturn);
+        print_r( json_encode($dataReturn) );
+    }
+
+    public function readedit_importorder(){
+        $p_data             = $this->input->post('data');
+        
+        $dataReceive        = TripleDES::decryptText($p_data,$this->desKey);
+        $dataReceive        = json_decode($dataReceive,true);
+
+        if($dataReceive == ''){
+            $arrRetrun = array( "sflag"=>false, "msg"=>"Key TripleDES Error ");
+            echo json_encode($arrRetrun);
+            return;
+        }
+
+        ## check param
+        $arrParam = array('doc_id');
+        foreach ($arrParam as $key) {
+            if(!isset($dataReceive[$key])){
+                $arrRetrun = array( "sflag"=>false, "msg"=>"Parameter Error ".$key);
+                echo json_encode($arrRetrun);
+                return;
+            }
+        }
+        ## --
+
+        $this->load->model('MImportorder');
+
+        $dataReturn = $this->MImportorder->readeditImportorder($dataReceive);
         print_r( json_encode($dataReturn) );
     }
 

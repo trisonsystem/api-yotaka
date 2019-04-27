@@ -88,7 +88,8 @@ $route['lang/(:any)']              = 'LanguageController/$1';
 	$route['importorder/read_runbill']		= 'ImportorderController/runbill';
 	$route['importorder/read_importorder']		= 'ImportorderController/readImportorder';
 	$route['importorder/save_importorder']		= 'ImportorderController/saveImportOrder';
-	// $route['unit/readedit_unit']	= 'UnitController/readEditUnit';
+	$route['importorder/approve_importorder']		= 'ImportorderController/approve_importorder';
+	$route['importorder/readedit_importorder']	= 'ImportorderController/readedit_importorder';
 	// $route['unit/del_unit']			= 'UnitController/delUnit';
 }
 
