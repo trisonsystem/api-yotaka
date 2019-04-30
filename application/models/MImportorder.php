@@ -243,6 +243,22 @@ class MImportorder extends CI_Model {
 			$aSave["status"]   = "1"; 
 			$this->db->where("id", $arrpost['doc_id']);
 			if ($this->db->update('import_order',$aSave)) {
+
+				$header = array(
+					'order_no' 			=> $h[1]['value'],
+					'order_date'		=> date('Y-m-d', strtotime($h[2]['value'])), 
+					'order_refer'		=> $h[3]['value'],
+					'distributor_id'	=> $h[4]['value'],
+					'hotel_id'			=> $arrpost['hotel_id'],
+					'remark'			=> $h[7]['value'],
+					'create_date'		=> date('Y-m-d H:i:s'),
+					'create_by'			=> $arrpost['user'],
+					'update_date'		=> date('Y-m-d H:i:s'),
+					'update_by'			=> $arrpost['user']
+				);
+
+				$this->db->insert('import_order',$header);
+
 				$statusQuery 	= $this->db->affected_rows();
 			}
 		} else {

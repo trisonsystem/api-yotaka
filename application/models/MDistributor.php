@@ -1,28 +1,30 @@
 <?php
-class MUnit extends CI_Model {
+class MDistributor extends CI_Model {
 
 	public function __construct(){
 		parent::__construct();
 
 	}
 
-	public function readUnit($arrpost){
+	public function readDistributor($arrpost){
 		$arr = array('status_flag'=>0,'msg'=>'no data');
+
+		if ( !isset($arrpost["id"]) )        	{ $arrpost["id"]     = "";}
+		if ( !isset($arrpost["distributor_name"]) )        	{ $arrpost["distributor_name"]     = "";}
 
 		$limit_s = ($arrpost['page'] > 1)? ($arrpost['page']*$arrpost['limit'])-$arrpost['limit'] : 0;
 		$limit_e = $arrpost['limit'];
 
-		if ( !isset($arrpost["unit_name"]) ) 	    { $arrpost["unit_name"] 	= "";}
-
 		$where	= "";
-		$where  .= ( $arrpost["unit_name"] 		== "" ) ? "" : " AND un.name LIKE '%".$arrpost["unit_name"]."%'";
+		$where  .= ( $arrpost["id"]      == "" ) ? "" : " AND dis.id='".$arrpost["id"]."'";
+		$where  .= ( $arrpost["distributor_name"] 		== "" ) ? "" : " AND dis.name LIKE '%".$arrpost["distributor_name"]."%'";
+		$where  .= " and dis.hotel_id='".$arrpost["hotel_id"]."'";
 
-		// $keysearch 	= $this->input->get('term');
 		$arr 		= array();
 
 		$sqlAuto	 = "select * ";
-		$sqlAuto	.= "from m_unit as un ";
-		$sqlAuto	.= "where 1 and status = 0".$where." order by un.id desc ";
+		$sqlAuto	.= "from distributor as dis ";
+		$sqlAuto	.= "where 1 and dis.status <> 99 ".$where." order by dis.id desc ";
 		$sqlAuto	.= "limit ".$limit_s.",".$limit_e;
 		$queryAuto 	= $this->db->query($sqlAuto);
 		$checkAuto  = $queryAuto->num_rows();
@@ -37,50 +39,54 @@ class MUnit extends CI_Model {
 			}
 		}
 
-		// debug($arr);
+		$arr['status']     = true;
+		$arr['optionPage'] = array('page' => $arrpost['page'], 'listCount' => count($arr['data']));
 
 		return $arr;
 	}
 
-	public function saveUnit($arrpost){
-
+	public function saveDistributor($arrpost){
 		$arr 		 = array('status_flag'=>0,'msg'=>'error');
 		$statusQuery = 0;
 
-		if($arrpost['unitid'] ==''){
-        	$dataIns = array(
-                    'name'  => $arrpost['unitname'],
+		if ($arrpost['disid'] =='') {
+			$dataIns = array(
+                    'name'  => $arrpost['disname'],
+                    'address' => $arrpost['disaddress'],
+                    'vatid'		=> $arrpost['disvat'],
                     'status'    	=> '0',
+                    'hotel_id'		=>$arrpost['hotel_id'],
                     'create_date'  	=> date('Y-m-d H:i:s'),
                     'create_by'		=> $arrpost['user'],
                     'update_date'  	=> date('Y-m-d H:i:s'),
                     'update_by'		=> $arrpost['user']
                 );
-        	$queryInsert    = $this->db->insert('m_unit',$dataIns);
+        	$queryInsert    = $this->db->insert('distributor',$dataIns);
         	$statusQuery 	= $this->db->affected_rows();
-
-		}else{
-			$sqlChk	 	= "select * from m_unit where name = '".$arrpost['unitname']."'";
+		} else {
+			$sqlChk	 	= "select * from distributor where name = '".$arrpost['disname']."'";
 			$queryChk 	= $this->db->query($sqlChk);
 			$checkChk  	= $queryChk->num_rows();
 
 	        if($checkChk == 0){
 
 				$dataUpdate = array(
-	                        'name'  => $arrpost['unitname'],
+	                        'name'  => $arrpost['disname'],
+		                    'address' => $arrpost['disaddress'],
+		                    'vatid'		=> $arrpost['disvat'],
 		                    'update_date'  	=> date('Y-m-d H:i:s'),
 		                    'update_by'		=> $arrpost['user']
 	                    );
-				$this->db->where('id', $arrpost['unitid']);
-	        	$this->db->update('m_unit', $dataUpdate);
+				$this->db->where('id', $arrpost['disid']);
+	        	$this->db->update('distributor', $dataUpdate);
 	        	$statusQuery 	= $this->db->affected_rows();
 	        }else{
 	        	$arr['msg'] = 'error product id duplicate';
 				return $arr;
 	        }
 		}
-
-        if($statusQuery == 1){
+		
+		if($statusQuery == 1){
         	$arr['status_flag'] = 1;
         	$arr['msg'] 		= 'save succress';
         }else{
@@ -90,24 +96,7 @@ class MUnit extends CI_Model {
         return $arr;
 	}
 
-	public function readEditUnit($arrpost){
-		$arr = array('status_flag'=>0,'msg'=>'no data');
-
-		$sqlAuto 	 = "select * ";
-		$sqlAuto 	.= "from m_unit as ut ";
-		$sqlAuto	.= "where ut.id ='".$arrpost['id']."' ";
-		$queryAuto 	= $this->db->query($sqlAuto);
-		$checkAuto  = $queryAuto->num_rows();
-
-		if($checkAuto > 0){
-        	$arr['status_flag'] = 1;
-        	$arr['msg'] 		= $queryAuto->row_array();
-        }
-
-		return $arr;
-	}
-
-	public function delUnit($arrpost){
+	public function delDistributor($arrpost){
 		$arr = array('status_flag'=>0,'msg'=>'error');
 
        	$dataUpdate = array(
@@ -115,7 +104,7 @@ class MUnit extends CI_Model {
                     'update_date'  	=> date('Y-m-d H:i:s')
                 );
 		$this->db->where('id', $arrpost['id']);
-    	$this->db->update('m_unit', $dataUpdate);
+    	$this->db->update('distributor', $dataUpdate);
 
         $statusQuery 	= $this->db->affected_rows();
 
@@ -128,5 +117,4 @@ class MUnit extends CI_Model {
 
         return $arr;
 	}
-
 }

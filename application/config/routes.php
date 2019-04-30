@@ -85,6 +85,13 @@ $route['lang/(:any)']              = 'LanguageController/$1';
 }
 
 {
+	$route['distributor/read_distributor']		= 'DistributorController/readDistributor';
+	$route['distributor/save_distributor']		= 'DistributorController/saveDistributor';
+	$route['distributor/readedit_distributor']	= 'DistributorController/readDistributor';
+	$route['distributor/del_distributor']			= 'DistributorController/delDistributor';
+}
+
+{
 	$route['importorder/read_runbill']				= 'ImportorderController/runbill';
 	$route['importorder/read_importorder']			= 'ImportorderController/readImportorder';
 	$route['importorder/save_importorder']			= 'ImportorderController/saveImportOrder';
